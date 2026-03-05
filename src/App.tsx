@@ -11,8 +11,12 @@ import Pacotes from "./pages/Pacotes";
 import Sobre from "./pages/Sobre";
 import Contacto from "./pages/Contacto";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import DashboardLayout from "./pages/DashboardLayout";
+import DashboardOverview from "./pages/DashboardOverview";
+import DashboardSupport from "./pages/DashboardSupport";
+import FeaturePage from "./components/dashboard/FeaturePage";
 import NotFound from "./pages/NotFound";
+import { PlanProvider } from "./contexts/PlanContext";
 
 const queryClient = new QueryClient();
 
@@ -37,21 +41,27 @@ const Layout = ({ children }: { children: ReactNode }) => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/pacotes" element={<Pacotes />} />
-            <Route path="/sobre" element={<Sobre />} />
-            <Route path="/contacto" element={<Contacto />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Layout>
-      </BrowserRouter>
+      <PlanProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/pacotes" element={<Pacotes />} />
+              <Route path="/sobre" element={<Sobre />} />
+              <Route path="/contacto" element={<Contacto />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+                <Route index element={<DashboardOverview />} />
+                <Route path="suporte" element={<DashboardSupport />} />
+                <Route path="feature/:featureId" element={<FeaturePage />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Layout>
+        </BrowserRouter>
+      </PlanProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
