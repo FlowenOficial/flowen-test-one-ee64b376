@@ -12,7 +12,8 @@ import {
   UserCheck, TrendingUp, Lock, Activity, LifeBuoy,
 } from "lucide-react";
 
-const iconMap: Record<string, React.FC<{ size?: number; className?: string }>> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const iconMap: Record<string, any> = {
   bot: Bot, "calendar-check": CalendarCheck, "bell-ring": BellRing,
   "bar-chart-3": BarChart3, "alert-triangle": AlertTriangle,
   "heart-handshake": HeartHandshake, phone: Phone, "credit-card": CreditCard,
@@ -69,7 +70,7 @@ export default function DashboardSidebar() {
         {tierGroupConfig.map(({ tier, label, emoji }) => {
           const features = FEATURES.filter((f) => f.tier === tier);
           return (
-            <SidebarGroup key={tier} defaultOpen>
+            <SidebarGroup key={tier}>
               <SidebarGroupLabel className="text-[11px] tracking-wider">
                 {!collapsed ? `${emoji} ${label}` : emoji}
               </SidebarGroupLabel>
