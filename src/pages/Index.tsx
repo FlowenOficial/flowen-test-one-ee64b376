@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import FadeIn from "@/components/FadeIn";
+import AnimatedCounter from "@/components/AnimatedCounter";
+import { motion } from "framer-motion";
+import heroBg from "@/assets/hero-bg.jpg";
 import {
   AlertTriangle, CalendarOff, Users, TrendingDown,
   Zap, BarChart3, Scale, Shield,
   Bot, Calendar, Bell, FileText,
   UserCheck, Heart, Crown, Phone,
-  ArrowRight, CheckCircle2
+  ArrowRight, CheckCircle2, Quote, Star
 } from "lucide-react";
 
 const painPoints = [
@@ -21,6 +24,37 @@ const differentials = [
   { icon: BarChart3, title: "Resultados Mensuráveis", desc: "Métricas claras de impacto desde o primeiro mês." },
   { icon: Scale, title: "Escalabilidade Real", desc: "Cresça sem aumentar proporcionalmente a equipa." },
   { icon: Shield, title: "Consultoria Verdadeira", desc: "Não vendemos software. Construímos sistemas sob medida." },
+];
+
+const stats = [
+  { value: 89, suffix: "%", label: "Redução de no-shows" },
+  { value: 40, suffix: "+", label: "Negócios automatizados" },
+  { value: 12, suffix: "h", label: "Poupadas por semana" },
+  { value: 98, suffix: "%", label: "Taxa de satisfação" },
+];
+
+const testimonials = [
+  {
+    quote: "A Flowen transformou completamente a forma como gerimos a nossa clínica. Passámos de 30% de faltas para menos de 5%.",
+    name: "Dra. Ana Ferreira",
+    role: "Diretora Clínica",
+    company: "Clínica Saúde Plus",
+    stars: 5,
+  },
+  {
+    quote: "Antes da Flowen, perdíamos horas por dia em agendamentos manuais. Agora o sistema faz tudo sozinho, 24 horas por dia.",
+    name: "Ricardo Santos",
+    role: "CEO",
+    company: "PhysioCenter",
+    stars: 5,
+  },
+  {
+    quote: "O ROI foi visível logo no primeiro mês. A equipa agora foca-se no que realmente importa: os nossos pacientes.",
+    name: "Carla Mendes",
+    role: "Gestora de Operações",
+    company: "Dental Pro",
+    stars: 5,
+  },
 ];
 
 const packages = [
@@ -67,17 +101,41 @@ const Index = () => {
     <div className="min-h-screen">
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Background glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-primary/5 blur-[120px] animate-pulse-glow pointer-events-none" />
-        <div className="absolute top-20 right-10 w-64 h-64 rounded-full bg-primary/10 blur-[80px] pointer-events-none" />
-        
+        {/* Hero background image */}
+        <div className="absolute inset-0">
+          <img
+            src={heroBg}
+            alt=""
+            className="w-full h-full object-cover opacity-40"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+        </div>
+
+        {/* Animated floating orbs */}
+        <motion.div
+          className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-primary/8 blur-[100px] pointer-events-none"
+          animate={{ y: [0, -30, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 left-1/6 w-64 h-64 rounded-full bg-accent/10 blur-[80px] pointer-events-none"
+          animate={{ y: [0, 20, 0], x: [0, -15, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+
         <div className="container relative z-10 pt-24">
           <FadeIn>
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-xs font-medium mb-8">
+              <motion.div
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-xs font-medium mb-8"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+              >
                 <Zap size={14} />
                 Automação Operacional para Negócios
-              </div>
+              </motion.div>
               <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-6">
                 Processos repetitivos{" "}
                 <span className="gradient-text">não são para humanos.</span>
@@ -85,7 +143,7 @@ const Index = () => {
                 Sistemas sim.
               </h1>
               <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mb-10 leading-relaxed">
-                Ajudamos clínicas e negócios locais a escalar sem contratar mais pessoal. 
+                Ajudamos clínicas e negócios locais a escalar sem contratar mais pessoal.
                 Automação inteligente, sistemas sob medida.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -103,10 +161,43 @@ const Index = () => {
             </div>
           </FadeIn>
         </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-1.5">
+            <motion.div
+              className="w-1.5 h-1.5 rounded-full bg-primary"
+              animate={{ y: [0, 16, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Stats Bar */}
+      <section className="py-16 border-t border-b border-border bg-card/50 backdrop-blur-sm">
+        <div className="container">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat, i) => (
+              <FadeIn key={i} delay={i * 0.1}>
+                <div className="text-center">
+                  <div className="font-display text-4xl sm:text-5xl font-bold text-primary glow-text mb-2">
+                    <AnimatedCounter target={stat.value} suffix={stat.suffix} />
+                  </div>
+                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Pain Points */}
-      <section className="py-24 border-t border-border">
+      <section className="py-24 border-b border-border">
         <div className="container">
           <FadeIn>
             <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-3">O Problema</p>
@@ -120,13 +211,16 @@ const Index = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {painPoints.map((item, i) => (
               <FadeIn key={i} delay={i * 0.1}>
-                <div className="gradient-border rounded-xl p-6 bg-card h-full">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                <motion.div
+                  className="gradient-border rounded-xl p-6 bg-card h-full group"
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                >
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                     <item.icon size={20} className="text-primary" />
                   </div>
                   <h3 className="font-display font-semibold mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-                </div>
+                </motion.div>
               </FadeIn>
             ))}
           </div>
@@ -134,8 +228,13 @@ const Index = () => {
       </section>
 
       {/* Solution */}
-      <section className="py-24 bg-secondary/30">
-        <div className="container">
+      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+        <motion.div
+          className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-primary/5 blur-[100px] pointer-events-none"
+          animate={{ scale: [1, 1.2, 1] }}
+          transition={{ duration: 6, repeat: Infinity }}
+        />
+        <div className="container relative z-10">
           <FadeIn>
             <div className="max-w-2xl mx-auto text-center">
               <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-3">A Solução</p>
@@ -143,7 +242,7 @@ const Index = () => {
                 Sistemas que trabalham enquanto a sua equipa descansa.
               </h2>
               <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-                A Flowen constrói sistemas de automação operacional completos — agentes inteligentes que 
+                A Flowen constrói sistemas de automação operacional completos — agentes inteligentes que
                 atendem, agendam, cobram, relembram e reportam. Tudo sem intervenção humana.
               </p>
               <Link to="/pacotes">
@@ -168,11 +267,14 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {packages.map((pkg, i) => (
               <FadeIn key={i} delay={i * 0.1}>
-                <div className={`rounded-xl p-8 h-full flex flex-col ${
-                  pkg.highlight 
-                    ? "bg-primary/10 border-2 border-primary/50 glow-blue" 
-                    : "gradient-border bg-card"
-                }`}>
+                <motion.div
+                  className={`rounded-xl p-8 h-full flex flex-col ${
+                    pkg.highlight
+                      ? "bg-primary/10 border-2 border-primary/50 glow-blue"
+                      : "gradient-border bg-card"
+                  }`}
+                  whileHover={{ y: -6, transition: { duration: 0.25 } }}
+                >
                   {pkg.highlight && (
                     <span className="text-xs font-semibold text-primary bg-primary/20 px-3 py-1 rounded-full self-start mb-4">
                       Mais Popular
@@ -200,7 +302,43 @@ const Index = () => {
                       Falar Connosco
                     </Button>
                   </Link>
-                </div>
+                </motion.div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-24 bg-secondary/30 border-t border-border">
+        <div className="container">
+          <FadeIn>
+            <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-3">Testemunhos</p>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold mb-16">
+              O que dizem os nossos clientes.
+            </h2>
+          </FadeIn>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {testimonials.map((t, i) => (
+              <FadeIn key={i} delay={i * 0.12}>
+                <motion.div
+                  className="gradient-border rounded-xl p-8 bg-card h-full flex flex-col"
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                >
+                  <Quote size={24} className="text-primary/40 mb-4" />
+                  <p className="text-secondary-foreground leading-relaxed mb-6 flex-1">
+                    "{t.quote}"
+                  </p>
+                  <div className="flex items-center gap-1 mb-4">
+                    {Array.from({ length: t.stars }).map((_, j) => (
+                      <Star key={j} size={14} className="text-primary fill-primary" />
+                    ))}
+                  </div>
+                  <div>
+                    <p className="font-display font-semibold text-sm">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.role} · {t.company}</p>
+                  </div>
+                </motion.div>
               </FadeIn>
             ))}
           </div>
@@ -208,7 +346,7 @@ const Index = () => {
       </section>
 
       {/* Differentials */}
-      <section className="py-24 bg-secondary/30">
+      <section className="py-24 border-t border-border">
         <div className="container">
           <FadeIn>
             <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-3">Porquê a Flowen</p>
@@ -219,13 +357,16 @@ const Index = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {differentials.map((item, i) => (
               <FadeIn key={i} delay={i * 0.1}>
-                <div className="text-center">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                <motion.div
+                  className="text-center group"
+                  whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
                     <item.icon size={24} className="text-primary" />
                   </div>
                   <h3 className="font-display font-semibold mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-                </div>
+                </motion.div>
               </FadeIn>
             ))}
           </div>
@@ -233,8 +374,13 @@ const Index = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 border-t border-border">
-        <div className="container">
+      <section className="py-24 border-t border-border relative overflow-hidden">
+        <motion.div
+          className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none"
+          animate={{ opacity: [0.3, 0.6, 0.3] }}
+          transition={{ duration: 4, repeat: Infinity }}
+        />
+        <div className="container relative z-10">
           <FadeIn>
             <div className="max-w-2xl mx-auto text-center">
               <h2 className="font-display text-3xl sm:text-4xl font-bold mb-6">
