@@ -14,6 +14,10 @@ import Login from "./pages/Login";
 import DashboardLayout from "./pages/DashboardLayout";
 import DashboardOverview from "./pages/DashboardOverview";
 import DashboardSupport from "./pages/DashboardSupport";
+import DashboardCalendario from "./pages/DashboardCalendario";
+import DashboardEscalacoes from "./pages/DashboardEscalacoes";
+import DashboardSubscricao from "./pages/DashboardSubscricao";
+import DashboardNotificacoes from "./pages/DashboardNotificacoes";
 import FeaturePage from "./components/dashboard/FeaturePage";
 import NotFound from "./pages/NotFound";
 import { PlanProvider } from "./contexts/PlanContext";
@@ -55,6 +59,10 @@ const App = () => (
               <Route path="/dashboard" element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
                 <Route index element={<DashboardOverview />} />
                 <Route path="suporte" element={<DashboardSupport />} />
+                <Route path="calendario" element={<DashboardCalendario />} />
+                <Route path="escalacoes" element={<DashboardEscalacoes />} />
+                <Route path="subscricao" element={<DashboardSubscricao />} />
+                <Route path="notificacoes" element={<DashboardNotificacoes />} />
                 <Route path="feature/:featureId" element={<FeaturePage />} />
               </Route>
               <Route path="*" element={<NotFound />} />

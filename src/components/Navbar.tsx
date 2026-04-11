@@ -40,13 +40,18 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Mobile toggle */}
-        <button
-          className="md:hidden text-foreground"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Mobile: CTA + hamburger */}
+        <div className="flex md:hidden items-center gap-2">
+          <Link to="/dashboard">
+            <Button variant="hero" size="sm" className="text-xs px-3 h-9">Área de Cliente</Button>
+          </Link>
+          <button
+            className="text-foreground p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -64,16 +69,13 @@ const Navbar = () => {
                   key={link.to}
                   to={link.to}
                   onClick={() => setMobileOpen(false)}
-                  className={`text-sm font-medium ${
+                  className={`text-base font-medium min-h-[44px] flex items-center ${
                     location.pathname === link.to ? "text-primary" : "text-muted-foreground"
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
-              <Link to="/dashboard" onClick={() => setMobileOpen(false)}>
-                <Button variant="hero" size="sm" className="w-full">Área de Cliente</Button>
-              </Link>
             </div>
           </motion.div>
         )}

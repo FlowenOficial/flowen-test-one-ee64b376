@@ -69,6 +69,7 @@ const packages = [
     ],
     result: "Reduza no-shows e automatize o atendimento básico.",
     highlight: false,
+    order: "order-2 md:order-1",
   },
   {
     name: "Scale",
@@ -80,6 +81,7 @@ const packages = [
     ],
     result: "Operações escaláveis e melhor retenção de clientes.",
     highlight: true,
+    order: "order-1 md:order-2",
   },
   {
     name: "Executive",
@@ -93,15 +95,15 @@ const packages = [
     ],
     result: "Operação de negócio quase autónoma.",
     highlight: false,
+    order: "order-3",
   },
 ];
 
 const Index = () => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-x-hidden">
       {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Hero background image */}
         <div className="absolute inset-0">
           <img
             src={heroBg}
@@ -112,23 +114,23 @@ const Index = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
         </div>
 
-        {/* Animated floating orbs */}
+        {/* Animated floating orbs — smaller on mobile */}
         <motion.div
-          className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-primary/8 blur-[100px] pointer-events-none"
+          className="absolute top-1/4 right-1/4 w-48 h-48 md:w-96 md:h-96 rounded-full bg-primary/8 blur-[60px] md:blur-[100px] pointer-events-none"
           animate={{ y: [0, -30, 0], scale: [1, 1.1, 1] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-1/4 left-1/6 w-64 h-64 rounded-full bg-accent/10 blur-[80px] pointer-events-none"
+          className="absolute bottom-1/4 left-1/6 w-32 h-32 md:w-64 md:h-64 rounded-full bg-accent/10 blur-[50px] md:blur-[80px] pointer-events-none"
           animate={{ y: [0, 20, 0], x: [0, -15, 0] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        <div className="container relative z-10 pt-24">
+        <div className="container relative z-10 pt-24 md:pt-24 px-4">
           <FadeIn>
             <div className="max-w-3xl">
               <motion.div
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-xs font-medium mb-8"
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-xs font-medium mb-6 md:mb-8"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.3, duration: 0.5 }}
@@ -136,24 +138,24 @@ const Index = () => {
                 <Zap size={14} />
                 Automação Operacional para Negócios
               </motion.div>
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-6">
+              <h1 className="font-display text-3xl sm:text-5xl lg:text-7xl font-bold leading-[1.1] tracking-tight mb-6">
                 Processos repetitivos{" "}
                 <span className="gradient-text">não são para humanos.</span>
                 <br />
                 Sistemas sim.
               </h1>
-              <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mb-10 leading-relaxed">
+              <p className="text-base sm:text-xl text-muted-foreground max-w-xl mb-8 md:mb-10 leading-relaxed">
                 Ajudamos clínicas e negócios locais a escalar sem contratar mais pessoal.
                 Automação inteligente, sistemas sob medida.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/pacotes">
-                  <Button variant="hero" size="lg" className="text-base px-8 py-6">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Link to="/pacotes" className="w-full sm:w-auto">
+                  <Button variant="hero" size="lg" className="text-base px-8 py-6 w-full sm:w-auto min-h-[48px]">
                     Ver Pacotes <ArrowRight size={18} />
                   </Button>
                 </Link>
-                <Link to="/contacto">
-                  <Button variant="heroOutline" size="lg" className="text-base px-8 py-6">
+                <Link to="/contacto" className="w-full sm:w-auto">
+                  <Button variant="heroOutline" size="lg" className="text-base px-8 py-6 w-full sm:w-auto min-h-[48px]">
                     Falar Connosco
                   </Button>
                 </Link>
@@ -162,9 +164,9 @@ const Index = () => {
           </FadeIn>
         </div>
 
-        {/* Scroll indicator */}
+        {/* Scroll indicator — hide on mobile */}
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:block"
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
@@ -179,16 +181,16 @@ const Index = () => {
       </section>
 
       {/* Stats Bar */}
-      <section className="py-16 border-t border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="container">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+      <section className="py-12 md:py-16 border-t border-b border-border bg-card/50 backdrop-blur-sm">
+        <div className="container px-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {stats.map((stat, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <div className="text-center">
-                  <div className="font-display text-4xl sm:text-5xl font-bold text-primary glow-text mb-2">
+                  <div className="font-display text-3xl sm:text-5xl font-bold text-primary glow-text mb-2">
                     <AnimatedCounter target={stat.value} suffix={stat.suffix} />
                   </div>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground">{stat.label}</p>
                 </div>
               </FadeIn>
             ))}
@@ -197,28 +199,28 @@ const Index = () => {
       </section>
 
       {/* Pain Points */}
-      <section className="py-24 border-b border-border">
-        <div className="container">
+      <section className="py-16 md:py-24 border-b border-border">
+        <div className="container px-4">
           <FadeIn>
             <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-3">O Problema</p>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold mb-4">
+            <h2 className="font-display text-2xl sm:text-4xl font-bold mb-4">
               O seu negócio está preso a processos manuais?
             </h2>
-            <p className="text-muted-foreground max-w-lg mb-16">
+            <p className="text-muted-foreground max-w-lg mb-12 md:mb-16">
               A maioria dos negócios locais enfrenta os mesmos bloqueios operacionais.
             </p>
           </FadeIn>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {painPoints.map((item, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <motion.div
-                  className="gradient-border rounded-xl p-6 bg-card h-full group"
+                  className="gradient-border rounded-xl p-5 md:p-6 bg-card h-full group"
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 >
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                     <item.icon size={20} className="text-primary" />
                   </div>
-                  <h3 className="font-display font-semibold mb-2">{item.title}</h3>
+                  <h3 className="font-display font-semibold mb-2 text-base">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                 </motion.div>
               </FadeIn>
@@ -228,25 +230,25 @@ const Index = () => {
       </section>
 
       {/* Solution */}
-      <section className="py-24 bg-secondary/30 relative overflow-hidden">
+      <section className="py-16 md:py-24 bg-secondary/30 relative overflow-hidden">
         <motion.div
           className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-primary/5 blur-[100px] pointer-events-none"
           animate={{ scale: [1, 1.2, 1] }}
           transition={{ duration: 6, repeat: Infinity }}
         />
-        <div className="container relative z-10">
+        <div className="container relative z-10 px-4">
           <FadeIn>
             <div className="max-w-2xl mx-auto text-center">
               <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-3">A Solução</p>
-              <h2 className="font-display text-3xl sm:text-4xl font-bold mb-6">
+              <h2 className="font-display text-2xl sm:text-4xl font-bold mb-6">
                 Sistemas que trabalham enquanto a sua equipa descansa.
               </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed mb-8">
+              <p className="text-muted-foreground text-base sm:text-lg leading-relaxed mb-8">
                 A Flowen constrói sistemas de automação operacional completos — agentes inteligentes que
                 atendem, agendam, cobram, relembram e reportam. Tudo sem intervenção humana.
               </p>
               <Link to="/pacotes">
-                <Button variant="hero" size="lg">
+                <Button variant="hero" size="lg" className="min-h-[48px]">
                   Explorar Soluções <ArrowRight size={18} />
                 </Button>
               </Link>
@@ -256,11 +258,11 @@ const Index = () => {
       </section>
 
       {/* Packages Preview */}
-      <section className="py-24 border-t border-border">
-        <div className="container">
+      <section className="py-16 md:py-24 border-t border-border">
+        <div className="container px-4">
           <FadeIn>
             <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-3">Pacotes</p>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold mb-16">
+            <h2 className="font-display text-2xl sm:text-4xl font-bold mb-12 md:mb-16">
               Escolha o nível de automação certo.
             </h2>
           </FadeIn>
@@ -268,7 +270,7 @@ const Index = () => {
             {packages.map((pkg, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <motion.div
-                  className={`rounded-xl p-8 h-full flex flex-col ${
+                  className={`rounded-xl p-6 md:p-8 h-full flex flex-col ${pkg.order} ${
                     pkg.highlight
                       ? "bg-primary/10 border-2 border-primary/50 glow-blue"
                       : "gradient-border bg-card"
@@ -297,8 +299,8 @@ const Index = () => {
                     <CheckCircle2 size={16} className="text-primary mt-0.5 shrink-0" />
                     <span className="text-xs text-muted-foreground">{pkg.result}</span>
                   </div>
-                  <Link to="/contacto">
-                    <Button variant={pkg.highlight ? "hero" : "heroOutline"} className="w-full">
+                  <Link to="/contacto" className="w-full">
+                    <Button variant={pkg.highlight ? "hero" : "heroOutline"} className="w-full min-h-[48px]">
                       Falar Connosco
                     </Button>
                   </Link>
@@ -310,11 +312,11 @@ const Index = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 bg-secondary/30 border-t border-border">
-        <div className="container">
+      <section className="py-16 md:py-24 bg-secondary/30 border-t border-border">
+        <div className="container px-4">
           <FadeIn>
             <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-3">Testemunhos</p>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold mb-16">
+            <h2 className="font-display text-2xl sm:text-4xl font-bold mb-12 md:mb-16">
               O que dizem os nossos clientes.
             </h2>
           </FadeIn>
@@ -322,7 +324,7 @@ const Index = () => {
             {testimonials.map((t, i) => (
               <FadeIn key={i} delay={i * 0.12}>
                 <motion.div
-                  className="gradient-border rounded-xl p-8 bg-card h-full flex flex-col"
+                  className="gradient-border rounded-xl p-6 md:p-8 bg-card h-full flex flex-col"
                   whileHover={{ y: -4, transition: { duration: 0.2 } }}
                 >
                   <Quote size={24} className="text-primary/40 mb-4" />
@@ -346,26 +348,26 @@ const Index = () => {
       </section>
 
       {/* Differentials */}
-      <section className="py-24 border-t border-border">
-        <div className="container">
+      <section className="py-16 md:py-24 border-t border-border">
+        <div className="container px-4">
           <FadeIn>
             <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-3">Porquê a Flowen</p>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold mb-16">
+            <h2 className="font-display text-2xl sm:text-4xl font-bold mb-12 md:mb-16">
               O que nos distingue.
             </h2>
           </FadeIn>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {differentials.map((item, i) => (
               <FadeIn key={i} delay={i * 0.1}>
                 <motion.div
                   className="text-center group"
                   whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                    <item.icon size={24} className="text-primary" />
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
+                    <item.icon size={20} className="text-primary md:w-6 md:h-6" />
                   </div>
-                  <h3 className="font-display font-semibold mb-2">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+                  <h3 className="font-display font-semibold mb-2 text-sm md:text-base">{item.title}</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                 </motion.div>
               </FadeIn>
             ))}
@@ -374,29 +376,29 @@ const Index = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-24 border-t border-border relative overflow-hidden">
+      <section className="py-16 md:py-24 border-t border-border relative overflow-hidden">
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5 pointer-events-none"
           animate={{ opacity: [0.3, 0.6, 0.3] }}
           transition={{ duration: 4, repeat: Infinity }}
         />
-        <div className="container relative z-10">
+        <div className="container relative z-10 px-4">
           <FadeIn>
             <div className="max-w-2xl mx-auto text-center">
-              <h2 className="font-display text-3xl sm:text-4xl font-bold mb-6">
+              <h2 className="font-display text-2xl sm:text-4xl font-bold mb-6">
                 Pronto para automatizar o seu negócio?
               </h2>
-              <p className="text-muted-foreground text-lg mb-10">
+              <p className="text-muted-foreground text-base sm:text-lg mb-8 md:mb-10">
                 Agende uma consulta gratuita e descubra como a Flowen pode transformar as suas operações.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/contacto">
-                  <Button variant="hero" size="lg" className="text-base px-10 py-6">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                <Link to="/contacto" className="w-full sm:w-auto">
+                  <Button variant="hero" size="lg" className="text-base px-10 py-6 w-full sm:w-auto min-h-[48px]">
                     Falar Connosco <ArrowRight size={18} />
                   </Button>
                 </Link>
-                <Link to="/pacotes">
-                  <Button variant="heroOutline" size="lg" className="text-base px-10 py-6">
+                <Link to="/pacotes" className="w-full sm:w-auto">
+                  <Button variant="heroOutline" size="lg" className="text-base px-10 py-6 w-full sm:w-auto min-h-[48px]">
                     Ver Pacotes
                   </Button>
                 </Link>

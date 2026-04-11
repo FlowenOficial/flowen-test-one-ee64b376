@@ -9,7 +9,7 @@ import {
 import {
   Bot, CalendarCheck, BellRing, BarChart3, AlertTriangle,
   HeartHandshake, Phone, CreditCard, CalendarClock, Repeat,
-  UserCheck, TrendingUp, Lock, Activity, LifeBuoy,
+  UserCheck, TrendingUp, Lock, Activity, LifeBuoy, Calendar, Bell,
 } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -51,6 +51,14 @@ export default function DashboardSidebar() {
                   <NavLink to="/dashboard" end activeClassName="bg-sidebar-accent text-primary font-medium">
                     <Activity className="mr-2 h-4 w-4" />
                     {!collapsed && <span>Visão Geral</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/dashboard/calendario" end activeClassName="bg-sidebar-accent text-primary font-medium">
+                    <Calendar className="mr-2 h-4 w-4" />
+                    {!collapsed && <span>Calendário</span>}
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -110,6 +118,41 @@ export default function DashboardSidebar() {
             </SidebarGroup>
           );
         })}
+
+        {/* Account section */}
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-[11px] tracking-wider">
+            {!collapsed ? "⚙️ Conta" : "⚙️"}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/dashboard/escalacoes" end activeClassName="bg-sidebar-accent text-primary font-medium">
+                    <AlertTriangle className="mr-2 h-4 w-4" />
+                    {!collapsed && <span>Escalações</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/dashboard/subscricao" end activeClassName="bg-sidebar-accent text-primary font-medium">
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    {!collapsed && <span>Subscrição</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink to="/dashboard/notificacoes" end activeClassName="bg-sidebar-accent text-primary font-medium">
+                    <Bell className="mr-2 h-4 w-4" />
+                    {!collapsed && <span>Notificações</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   );
