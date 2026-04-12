@@ -166,27 +166,39 @@ const lembretes: FeatureContentDef = {
     { label: "Esta Semana", value: "67" },
     { label: "Taxa de Comparência", value: "89%" },
   ],
-  render: () => (
-    <>
-      <ActivityList items={[
-        { text: "Lembrete enviado via WhatsApp — Ana Silva, consulta às 15:00", time: "Há 12 min", status: "enviado" },
-        { text: "Lembrete enviado via WhatsApp — Pedro Reis, consulta às 10:30", time: "Há 30 min", status: "enviado" },
-        { text: "Lembrete enviado via WhatsApp — Marta Lopes, consulta às 14:00", time: "Há 1h", status: "enviado" },
-        { text: "Lembrete enviado via WhatsApp — João Costa, consulta às 16:30", time: "Há 2h", status: "enviado" },
-        { text: "Lembrete enviado via WhatsApp — Sofia Almeida, consulta às 09:00", time: "Há 3h", status: "enviado" },
-      ]} />
-      <div className="mt-6">
-        <h4 className="text-sm font-medium text-muted-foreground mb-3">No-Shows Evitados Este Mês</h4>
-        <div className="p-4 rounded-lg bg-muted">
-          <div className="flex justify-between text-sm mb-2">
-            <span>23 de 26 consultas compareceram</span>
-            <span className="text-primary font-semibold">88%</span>
+  render: () => {
+    const [progressValue, setProgressValue] = useState(0);
+    useEffect(() => {
+      const t = setTimeout(() => setProgressValue(88), 100);
+      return () => clearTimeout(t);
+    }, []);
+    return (
+      <>
+        <ActivityList items={[
+          { text: "Lembrete enviado via WhatsApp — Ana Silva, consulta às 15:00", time: "Há 12 min", status: "enviado" },
+          { text: "Lembrete enviado via WhatsApp — Pedro Reis, consulta às 10:30", time: "Há 30 min", status: "enviado" },
+          { text: "Lembrete enviado via WhatsApp — Marta Lopes, consulta às 14:00", time: "Há 1h", status: "enviado" },
+          { text: "Lembrete enviado via WhatsApp — João Costa, consulta às 16:30", time: "Há 2h", status: "enviado" },
+          { text: "Lembrete enviado via WhatsApp — Sofia Almeida, consulta às 09:00", time: "Há 3h", status: "enviado" },
+        ]} />
+        <div className="mt-6">
+          <h4 className="text-sm font-medium text-muted-foreground mb-3">No-Shows Evitados Este Mês</h4>
+          <div className="p-4 rounded-lg bg-muted">
+            <div className="flex justify-between text-sm mb-2">
+              <span>23 de 26 consultas compareceram</span>
+              <span className="text-primary font-semibold">88%</span>
+            </div>
+            <div className="h-3 rounded-full bg-secondary overflow-hidden">
+              <div
+                className="h-full rounded-full bg-primary transition-all duration-1000 ease-out"
+                style={{ width: `${progressValue}%` }}
+              />
+            </div>
           </div>
-          <Progress value={88} className="h-3" />
         </div>
-      </div>
-    </>
-  ),
+      </>
+    );
+  },
 };
 
 /* relatorios */
