@@ -50,8 +50,9 @@ const ActivityList = ({ items }: { items: { text: string; time: string; status?:
 
 const StatusCard = ({ text, sub }: { text: string; sub: string }) => (
   <div className="flex items-center gap-3 mb-6">
-    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center relative">
       <span className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
+      <span className="absolute w-3 h-3 rounded-full bg-emerald-400 animate-ping opacity-75" />
     </div>
     <div>
       <p className="font-display font-semibold">{text}</p>
