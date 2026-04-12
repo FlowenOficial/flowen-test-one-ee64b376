@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FadeIn from "@/components/FadeIn";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { NumberTicker } from "@/components/NumberTicker";
 import {
   CalendarCheck, AlertTriangle, TrendingUp, CreditCard,
   MessageSquare, Bell, Calendar, Heart, Bot,
@@ -11,10 +12,10 @@ import {
 } from "recharts";
 
 const kpis = [
-  { label: "Agendamentos Este Mês", value: "148", icon: CalendarCheck, trend: "+22%", trendColor: "text-emerald-400" },
-  { label: "No-Shows Evitados", value: "34", icon: AlertTriangle, trend: "89% comparência", trendColor: "text-primary" },
-  { label: "Escalações Pendentes", value: "3", icon: TrendingUp, trend: "", badge: true, badgeColor: "bg-red-500/20 text-red-400 border-red-500/30" },
-  { label: "Próxima Faturação", value: "28 Abr — €129", icon: CreditCard, trend: "", badge: true, badgeColor: "bg-primary/20 text-primary border-primary/30", badgeText: "Em 17 dias" },
+  { label: "Agendamentos Este Mês", value: 148, icon: CalendarCheck, trend: "+22%", trendColor: "text-emerald-400" },
+  { label: "No-Shows Evitados", value: 34, icon: AlertTriangle, trend: "89% comparência", trendColor: "text-primary" },
+  { label: "Escalações Pendentes", value: 3, icon: TrendingUp, badge: true, badgeColor: "bg-red-500/20 text-red-400 border-red-500/30", badgeText: "3 pendentes" },
+  { label: "Próxima Faturação", value: 129, icon: CreditCard, isText: true, displayText: "28 Abr — €129", badge: true, badgeColor: "bg-primary/20 text-primary border-primary/30", badgeText: "Em 17 dias" },
 ];
 
 const weeklyAppointments = [
@@ -56,10 +57,27 @@ const chartTooltipStyle = { background: "hsl(220,30%,8%)", border: "1px solid hs
 
 export default function DashboardOverview() {
   const [escalacoes, setEscalacoes] = useState(initialEscalacoes);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => { const t = setTimeout(() => setLoading(false), 800); return () => clearTimeout(t); }, []);
 
   const markResolved = (id: number) => {
     setEscalacoes(prev => prev.map(e => e.id === id ? { ...e, status: "resolvido" } : e));
   };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-48 rounded bg-muted animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => <div key={i} className="h-28 rounded-xl bg-muted animate-pulse" />)}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {[...Array(2)].map((_, i) => <div key={i} className="h-64 rounded-xl bg-muted animate-pulse" />)}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <FadeIn>
@@ -68,18 +86,20 @@ export default function DashboardOverview() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {kpis.map((kpi, i) => (
-          <div key={i} className="gradient-border rounded-xl p-6 bg-card">
+          <div key={i} className="gradient-border rounded-xl p-6 bg-card transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] hover:border-primary/30">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                 <kpi.icon size={20} className="text-primary" />
               </div>
               <span className="text-sm text-muted-foreground">{kpi.label}</span>
             </div>
-            <p className="font-display text-2xl font-bold mb-1">{kpi.value}</p>
+            <p className="font-display text-2xl font-bold mb-1">
+              {kpi.isText ? kpi.displayText : <NumberTicker value={kpi.value} />}
+            </p>
             {kpi.trend && <p className={`text-xs ${kpi.trendColor}`}>{kpi.trend}</p>}
             {kpi.badge && (
               <Badge className={`text-[10px] mt-1 ${kpi.badgeColor}`}>
-                {kpi.badgeText || kpi.value}
+                {kpi.badgeText}
               </Badge>
             )}
           </div>
@@ -88,7 +108,7 @@ export default function DashboardOverview() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="gradient-border rounded-xl p-6 bg-card">
+        <div className="gradient-border rounded-xl p-6 bg-card transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)]">
           <h3 className="font-display font-semibold mb-4">Agendamentos por Semana</h3>
           <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
@@ -102,7 +122,7 @@ export default function DashboardOverview() {
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="gradient-border rounded-xl p-6 bg-card">
+        <div className="gradient-border rounded-xl p-6 bg-card transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)]">
           <h3 className="font-display font-semibold mb-4">Taxa de Comparência (%)</h3>
           <div className="h-52">
             <ResponsiveContainer width="100%" height="100%">
@@ -120,7 +140,7 @@ export default function DashboardOverview() {
 
       {/* Bottom panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="gradient-border rounded-xl p-6 bg-card">
+        <div className="gradient-border rounded-xl p-6 bg-card transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)]">
           <h3 className="font-display font-semibold mb-4">Últimas Escalações</h3>
           <div className="space-y-3">
             {escalacoes.map(e => (
@@ -133,7 +153,7 @@ export default function DashboardOverview() {
                   {e.status === "resolvido" ? "Resolvido" : "Pendente"}
                 </Badge>
                 {e.status === "pendente" && (
-                  <Button variant="outline" size="sm" className="text-xs" onClick={() => markResolved(e.id)}>
+                  <Button variant="outline" size="sm" className="text-xs active:scale-95 transition-transform duration-100" onClick={() => markResolved(e.id)}>
                     Marcar Resolvido
                   </Button>
                 )}
@@ -142,7 +162,7 @@ export default function DashboardOverview() {
           </div>
         </div>
 
-        <div className="gradient-border rounded-xl p-6 bg-card">
+        <div className="gradient-border rounded-xl p-6 bg-card transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)]">
           <h3 className="font-display font-semibold mb-4">Atividade Recente</h3>
           <div className="space-y-3">
             {recentActivity.map((n, i) => (

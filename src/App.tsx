@@ -18,7 +18,14 @@ import DashboardCalendario from "./pages/DashboardCalendario";
 import DashboardEscalacoes from "./pages/DashboardEscalacoes";
 import DashboardSubscricao from "./pages/DashboardSubscricao";
 import DashboardNotificacoes from "./pages/DashboardNotificacoes";
+import DashboardConfiguracoes from "./pages/DashboardConfiguracoes";
 import FeaturePage from "./components/dashboard/FeaturePage";
+import AdminLayout from "./pages/admin/AdminLayout";
+import AdminOverview from "./pages/admin/AdminOverview";
+import AdminClientes from "./pages/admin/AdminClientes";
+import AdminClienteDetalhe from "./pages/admin/AdminClienteDetalhe";
+import AdminPagamentos from "./pages/admin/AdminPagamentos";
+import AdminEscalacoes from "./pages/admin/AdminEscalacoes";
 import NotFound from "./pages/NotFound";
 import { PlanProvider } from "./contexts/PlanContext";
 
@@ -30,14 +37,22 @@ const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
+const AdminRoute = ({ children }: { children: ReactNode }) => {
+  const isAuth = localStorage.getItem("flowen_auth") === "true";
+  const isAdmin = localStorage.getItem("adminMode") === "true";
+  if (!isAuth || !isAdmin) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+};
+
 const Layout = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith("/dashboard");
+  const isAdmin = location.pathname.startsWith("/admin");
   return (
     <>
       <Navbar />
       {children}
-      {!isDashboard && <Footer />}
+      {!isDashboard && !isAdmin && <Footer />}
     </>
   );
 };
@@ -63,7 +78,15 @@ const App = () => (
                 <Route path="escalacoes" element={<DashboardEscalacoes />} />
                 <Route path="subscricao" element={<DashboardSubscricao />} />
                 <Route path="notificacoes" element={<DashboardNotificacoes />} />
+                <Route path="configuracoes" element={<DashboardConfiguracoes />} />
                 <Route path="feature/:featureId" element={<FeaturePage />} />
+              </Route>
+              <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+                <Route index element={<AdminOverview />} />
+                <Route path="clientes" element={<AdminClientes />} />
+                <Route path="clientes/:id" element={<AdminClienteDetalhe />} />
+                <Route path="pagamentos" element={<AdminPagamentos />} />
+                <Route path="escalacoes" element={<AdminEscalacoes />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

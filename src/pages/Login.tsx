@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import FadeIn from "@/components/FadeIn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,12 +13,36 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // Admin triple-click
+  const clickCount = useRef(0);
+  const firstClickTime = useRef(0);
+  const [titleAmber, setTitleAmber] = useState(false);
+
+  const handleTitleClick = () => {
+    const now = Date.now();
+    if (clickCount.current === 0 || now - firstClickTime.current > 2000) {
+      clickCount.current = 1;
+      firstClickTime.current = now;
+    } else {
+      clickCount.current++;
+    }
+    if (clickCount.current >= 3) {
+      clickCount.current = 0;
+      localStorage.setItem("adminMode", "true");
+      setTitleAmber(true);
+      setTimeout(() => setTitleAmber(false), 500);
+    }
+  };
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder auth — will be replaced with real auth
     if (email && password) {
       localStorage.setItem("flowen_auth", "true");
-      navigate("/dashboard");
+      if (localStorage.getItem("adminMode") === "true") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } else {
       toast({ title: "Erro", description: "Preencha todos os campos.", variant: "destructive" });
     }
@@ -30,7 +54,12 @@ const Login = () => {
         <FadeIn>
           <div className="gradient-border rounded-xl p-8 bg-card">
             <div className="text-center mb-8">
-              <h1 className="font-display text-2xl font-bold gradient-text mb-2">Área de Cliente</h1>
+              <h1
+                className={`font-display text-2xl font-bold mb-2 cursor-default select-none transition-colors duration-300 ${titleAmber ? "text-amber-400" : "gradient-text"}`}
+                onClick={handleTitleClick}
+              >
+                Área de Cliente
+              </h1>
               <p className="text-sm text-muted-foreground">Aceda ao seu painel de controlo Flowen.</p>
             </div>
             <form onSubmit={handleLogin} className="space-y-4">
@@ -48,7 +77,7 @@ const Login = () => {
                   <Input id="password" type="password" placeholder="••••••••" className="pl-10" value={password} onChange={e => setPassword(e.target.value)} required />
                 </div>
               </div>
-              <Button variant="hero" size="lg" type="submit" className="w-full">
+              <Button variant="hero" size="lg" type="submit" className="w-full active:scale-95 transition-transform duration-100">
                 Entrar
               </Button>
             </form>
