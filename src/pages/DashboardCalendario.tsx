@@ -202,7 +202,6 @@ export default function DashboardCalendario() {
             {selectedAppts.length === 0 ? (
               <EmptyState icon={CalendarIcon} title="Sem consultas neste dia" description="Nenhuma consulta agendada para este dia." />
             ) : (
-            ) : (
               selectedAppts.map((a, i) => (
                 <div key={i} className="p-3 rounded-lg bg-muted">
                   <div className="flex items-center justify-between mb-1">
