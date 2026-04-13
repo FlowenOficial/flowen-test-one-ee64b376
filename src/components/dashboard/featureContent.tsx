@@ -5,7 +5,42 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  AreaChart, Area,
 } from "recharts";
+
+const chartTooltipStyle = { background: "hsl(220,30%,8%)", border: "1px solid hsl(220,20%,18%)", borderRadius: 8 };
+
+/* ─── Trend Chart component ─── */
+const TrendChart = ({ data, label }: { data: { day: string; value: number }[]; label: string }) => (
+  <div className="mt-6">
+    <h4 className="text-sm font-medium text-muted-foreground mb-3">{label}</h4>
+    <div className="h-40">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data}>
+          <defs>
+            <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="hsl(216,100%,56%)" stopOpacity={0.3} />
+              <stop offset="100%" stopColor="hsl(216,100%,56%)" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(220,20%,18%)" />
+          <XAxis dataKey="day" stroke="hsl(215,15%,60%)" fontSize={10} interval={4} />
+          <YAxis stroke="hsl(215,15%,60%)" fontSize={10} />
+          <Tooltip contentStyle={chartTooltipStyle} />
+          <Area type="monotone" dataKey="value" stroke="hsl(216,100%,56%)" strokeWidth={2} fill="url(#trendGrad)" />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+);
+
+/* Static 30-day trend data */
+const trendAtendimento = [42,38,45,50,47,52,48,44,39,55,51,46,43,49,53,47,41,56,50,44,48,52,45,39,54,47,51,43,48,47].map((v,i)=>({day:`${i+1}`,value:v}));
+const trendAgendamento = [5,7,4,8,6,9,3,7,5,10,8,4,6,11,7,5,9,6,8,4,12,7,5,9,6,3,8,10,7,8].map((v,i)=>({day:`${i+1}`,value:v}));
+const trendLembretes = [10,14,12,16,11,18,13,15,9,17,14,12,19,11,16,13,20,15,12,18,10,14,16,11,19,13,17,12,15,12].map((v,i)=>({day:`${i+1}`,value:v}));
+const trendPrioridade = [1,3,0,2,4,1,3,2,0,5,1,2,3,0,4,1,2,3,1,0,5,2,3,1,4,0,2,3,1,3].map((v,i)=>({day:`${i+1}`,value:v}));
+const trendFollowup = [4,6,3,7,5,8,2,6,4,9,5,3,7,4,8,3,6,5,9,2,7,4,6,3,10,5,8,4,6,6].map((v,i)=>({day:`${i+1}`,value:v}));
+const trendChamadas = [2,4,1,5,3,6,2,4,1,7,3,2,5,1,6,3,4,2,8,1,5,3,4,2,7,1,5,3,4,5].map((v,i)=>({day:`${i+1}`,value:v}));
 
 /* ─── helpers ─── */
 const StatusBadge = ({ status }: { status: string }) => {
