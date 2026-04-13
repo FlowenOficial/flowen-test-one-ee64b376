@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "@/hooks/useTheme";
 
 const navLinks = [
   { to: "/", label: "Início" },
@@ -14,6 +15,7 @@ const navLinks = [
 const Navbar = () => {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
@@ -35,13 +37,19 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
+          <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          </Button>
           <Link to="/dashboard">
             <Button variant="hero" size="sm">Área de Cliente</Button>
           </Link>
         </div>
 
-        {/* Mobile: CTA + hamburger */}
+        {/* Mobile: CTA + theme + hamburger */}
         <div className="flex md:hidden items-center gap-2">
+          <Button variant="ghost" size="icon" onClick={toggleTheme} className="min-h-[44px] min-w-[44px]">
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          </Button>
           <Link to="/dashboard">
             <Button variant="hero" size="sm" className="text-xs px-3 h-9">Área de Cliente</Button>
           </Link>

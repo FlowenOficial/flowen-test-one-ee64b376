@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Link } from "react-router-dom";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
@@ -14,7 +15,7 @@ import {
   Bot, CalendarCheck, BellRing, BarChart3, AlertTriangle,
   HeartHandshake, Phone, CreditCard, CalendarClock, Repeat,
   UserCheck, TrendingUp, Lock, Activity, LifeBuoy, Calendar, Bell,
-  Clock, Settings,
+  Clock, Settings, FileText,
 } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -37,6 +38,16 @@ const tierBadgeClass: Record<string, string> = {
   executive: "bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px] px-1.5 py-0",
 };
 
+function SidebarItemWithTooltip({ collapsed, label, children }: { collapsed: boolean; label: string; children: React.ReactNode }) {
+  if (!collapsed) return <>{children}</>;
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent side="right">{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
 export default function DashboardSidebar() {
   const { currentPlan } = usePlan();
   const { state } = useSidebar();
@@ -53,30 +64,23 @@ export default function DashboardSidebar() {
             <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink to="/dashboard" end activeClassName="bg-sidebar-accent text-primary font-medium">
-                      <Activity className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>Visão Geral</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink to="/dashboard/calendario" end activeClassName="bg-sidebar-accent text-primary font-medium">
-                      <Calendar className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>Calendário</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink to="/dashboard/suporte" end activeClassName="bg-sidebar-accent text-primary font-medium">
-                      <LifeBuoy className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>Suporte</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                {[
+                  { to: "/dashboard", label: "Visão Geral", icon: Activity, end: true },
+                  { to: "/dashboard/calendario", label: "Calendário", icon: Calendar, end: true },
+                  { to: "/dashboard/relatorios", label: "Relatórios", icon: FileText, end: true },
+                  { to: "/dashboard/suporte", label: "Suporte", icon: LifeBuoy, end: true },
+                ].map(item => (
+                  <SidebarMenuItem key={item.to}>
+                    <SidebarItemWithTooltip collapsed={collapsed} label={item.label}>
+                      <SidebarMenuButton asChild>
+                        <NavLink to={item.to} end={item.end} activeClassName="bg-sidebar-accent text-primary font-medium">
+                          <item.icon className="mr-2 h-4 w-4" />
+                          {!collapsed && <span>{item.label}</span>}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarItemWithTooltip>
+                  </SidebarMenuItem>
+                ))}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -99,48 +103,52 @@ export default function DashboardSidebar() {
                       if (!unlocked && isExec) {
                         return (
                           <SidebarMenuItem key={feature.id}>
-                            <SidebarMenuButton
-                              className="opacity-40 cursor-pointer"
-                              onClick={() => setExecDialog(true)}
-                            >
-                              <Icon className="mr-2 h-4 w-4 shrink-0" />
-                              {!collapsed && (
-                                <span className="flex items-center gap-2 min-w-0">
-                                  <span className="truncate text-sm">{feature.label}</span>
-                                  <Clock size={12} className="shrink-0 text-amber-400" />
-                                  <Badge className="shrink-0 bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px] px-1.5 py-0">
-                                    Em Breve
-                                  </Badge>
-                                </span>
-                              )}
-                            </SidebarMenuButton>
+                            <SidebarItemWithTooltip collapsed={collapsed} label={`${feature.label} — Em Breve`}>
+                              <SidebarMenuButton
+                                className="opacity-40 cursor-pointer"
+                                onClick={() => setExecDialog(true)}
+                              >
+                                <Icon className="mr-2 h-4 w-4 shrink-0" />
+                                {!collapsed && (
+                                  <span className="flex items-center gap-2 min-w-0">
+                                    <span className="truncate text-sm">{feature.label}</span>
+                                    <Clock size={12} className="shrink-0 text-amber-400" />
+                                    <Badge className="shrink-0 bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px] px-1.5 py-0">
+                                      Em Breve
+                                    </Badge>
+                                  </span>
+                                )}
+                              </SidebarMenuButton>
+                            </SidebarItemWithTooltip>
                           </SidebarMenuItem>
                         );
                       }
 
                       return (
                         <SidebarMenuItem key={feature.id}>
-                          <SidebarMenuButton asChild>
-                            <NavLink
-                              to={`/dashboard/feature/${feature.id}`}
-                              end
-                              className={unlocked ? "" : "opacity-50"}
-                              activeClassName="bg-sidebar-accent text-primary font-medium"
-                            >
-                              <Icon className="mr-2 h-4 w-4 shrink-0" />
-                              {!collapsed && (
-                                <span className="flex items-center gap-2 min-w-0">
-                                  <span className="truncate text-sm">{feature.label}</span>
-                                  {!unlocked && <Lock size={12} className="shrink-0 text-muted-foreground" />}
-                                  {!unlocked && (
-                                    <Badge className={`shrink-0 ${tierBadgeClass[feature.tier] || ""}`}>
-                                      {PLAN_LABELS[feature.tier]}
-                                    </Badge>
-                                  )}
-                                </span>
-                              )}
-                            </NavLink>
-                          </SidebarMenuButton>
+                          <SidebarItemWithTooltip collapsed={collapsed} label={feature.label}>
+                            <SidebarMenuButton asChild>
+                              <NavLink
+                                to={`/dashboard/feature/${feature.id}`}
+                                end
+                                className={unlocked ? "" : "opacity-50"}
+                                activeClassName="bg-sidebar-accent text-primary font-medium"
+                              >
+                                <Icon className="mr-2 h-4 w-4 shrink-0" />
+                                {!collapsed && (
+                                  <span className="flex items-center gap-2 min-w-0">
+                                    <span className="truncate text-sm">{feature.label}</span>
+                                    {!unlocked && <Lock size={12} className="shrink-0 text-muted-foreground" />}
+                                    {!unlocked && (
+                                      <Badge className={`shrink-0 ${tierBadgeClass[feature.tier] || ""}`}>
+                                        {PLAN_LABELS[feature.tier]}
+                                      </Badge>
+                                    )}
+                                  </span>
+                                )}
+                              </NavLink>
+                            </SidebarMenuButton>
+                          </SidebarItemWithTooltip>
                         </SidebarMenuItem>
                       );
                     })}
@@ -157,38 +165,23 @@ export default function DashboardSidebar() {
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink to="/dashboard/escalacoes" end activeClassName="bg-sidebar-accent text-primary font-medium">
-                      <AlertTriangle className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>Escalações</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink to="/dashboard/subscricao" end activeClassName="bg-sidebar-accent text-primary font-medium">
-                      <CreditCard className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>Subscrição</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink to="/dashboard/notificacoes" end activeClassName="bg-sidebar-accent text-primary font-medium">
-                      <Bell className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>Notificações</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink to="/dashboard/configuracoes" end activeClassName="bg-sidebar-accent text-primary font-medium">
-                      <Settings className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>Configurações</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                {[
+                  { to: "/dashboard/escalacoes", label: "Escalações", icon: AlertTriangle },
+                  { to: "/dashboard/subscricao", label: "Subscrição", icon: CreditCard },
+                  { to: "/dashboard/notificacoes", label: "Notificações", icon: Bell },
+                  { to: "/dashboard/configuracoes", label: "Configurações", icon: Settings },
+                ].map(item => (
+                  <SidebarMenuItem key={item.to}>
+                    <SidebarItemWithTooltip collapsed={collapsed} label={item.label}>
+                      <SidebarMenuButton asChild>
+                        <NavLink to={item.to} end activeClassName="bg-sidebar-accent text-primary font-medium">
+                          <item.icon className="mr-2 h-4 w-4" />
+                          {!collapsed && <span>{item.label}</span>}
+                        </NavLink>
+                      </SidebarMenuButton>
+                    </SidebarItemWithTooltip>
+                  </SidebarMenuItem>
+                ))}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

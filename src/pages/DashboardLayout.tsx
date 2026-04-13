@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import PlanIndicator from "@/components/dashboard/PlanIndicator";
+import OnboardingWizard from "@/components/dashboard/OnboardingWizard";
+import GlobalSearch from "@/components/dashboard/GlobalSearch";
 import { Button } from "@/components/ui/button";
-import { LogOut, Bell } from "lucide-react";
+import { LogOut, Bell, Search, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "@/hooks/useTheme";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
@@ -21,6 +24,20 @@ export default function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [notifCount] = useState(3);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+
+  // Ctrl+K / Cmd+K shortcut
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("flowen_auth");
@@ -37,6 +54,16 @@ export default function DashboardLayout() {
             <div className="flex-1">
               <PlanIndicator />
             </div>
+
+            {/* Search */}
+            <Button variant="ghost" size="icon" onClick={() => setSearchOpen(true)}>
+              <Search size={18} />
+            </Button>
+
+            {/* Theme toggle */}
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
+              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            </Button>
 
             {/* Notifications */}
             <DropdownMenu>
@@ -85,6 +112,8 @@ export default function DashboardLayout() {
           </main>
         </div>
       </div>
+      <OnboardingWizard />
+      <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
     </SidebarProvider>
   );
 }
