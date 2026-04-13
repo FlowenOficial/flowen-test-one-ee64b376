@@ -8,7 +8,6 @@ import { Search } from "lucide-react";
 import { mockClients, AdminClient } from "./adminData";
 import { Link } from "react-router-dom";
 import EmptyState from "@/components/EmptyState";
-import { Link } from "react-router-dom";
 
 export default function AdminClientes() {
   const [clients, setClients] = useState<AdminClient[]>(mockClients);

@@ -7,7 +7,6 @@ import { NumberTicker } from "@/components/NumberTicker";
 import { AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 import { mockEscalacoes as initialData } from "./adminData";
 import EmptyState from "@/components/EmptyState";
-import { mockEscalacoes as initialData } from "./adminData";
 
 const kpis = [
   { label: "Total Este Mês", value: 34, icon: AlertTriangle },
