@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
 import {
   Tooltip, TooltipContent, TooltipTrigger,
 } from "@/components/ui/tooltip";
+import EmptyState from "@/components/EmptyState";
 
 interface Appointment {
   date: string; // YYYY-MM-DD
@@ -196,7 +197,7 @@ export default function DashboardCalendario() {
           </SheetHeader>
           <div className="mt-4 space-y-3">
             {selectedAppts.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Sem consultas neste dia.</p>
+              <EmptyState icon={CalendarIcon} title="Sem consultas neste dia" description="Nenhuma consulta agendada para este dia." />
             ) : (
               selectedAppts.map((a, i) => (
                 <div key={i} className="p-3 rounded-lg bg-muted">

@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { NumberTicker } from "@/components/NumberTicker";
 import { AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 import { mockEscalacoes as initialData } from "./adminData";
+import EmptyState from "@/components/EmptyState";
 
 const kpis = [
   { label: "Total Este Mês", value: 34, icon: AlertTriangle },
@@ -46,6 +47,9 @@ export default function AdminEscalacoes() {
           <TabsTrigger value="resolvidas">Resolvidas</TabsTrigger>
         </TabsList>
         <TabsContent value={tab}>
+          {filtered.length === 0 ? (
+            <EmptyState icon={CheckCircle2} title="Nenhuma escalação encontrada" description="Não existem escalações para este filtro." />
+          ) : (
           <div className="gradient-border rounded-xl bg-card overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -80,6 +84,7 @@ export default function AdminEscalacoes() {
               </tbody>
             </table>
           </div>
+          )}
         </TabsContent>
       </Tabs>
     </FadeIn>

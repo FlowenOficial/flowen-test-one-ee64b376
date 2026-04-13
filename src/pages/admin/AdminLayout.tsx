@@ -1,13 +1,15 @@
-import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
+import { Outlet, useNavigate, Link, useLocation, useParams } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LayoutDashboard, Users, CreditCard, AlertTriangle, LogOut } from "lucide-react";
+import { mockClients } from "./adminData";
 
 const links = [
   { to: "/admin", label: "Visão Geral", icon: LayoutDashboard, end: true },
@@ -31,12 +33,25 @@ function AdminSidebar() {
             <SidebarMenu>
               {links.map((l) => (
                 <SidebarMenuItem key={l.to}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={l.to} end={l.end} activeClassName="bg-sidebar-accent text-primary font-medium">
-                      <l.icon className="mr-2 h-4 w-4" />
-                      {!collapsed && <span>{l.label}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
+                  {collapsed ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <SidebarMenuButton asChild>
+                          <NavLink to={l.to} end={l.end} activeClassName="bg-sidebar-accent text-primary font-medium">
+                            <l.icon className="mr-2 h-4 w-4" />
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">{l.label}</TooltipContent>
+                    </Tooltip>
+                  ) : (
+                    <SidebarMenuButton asChild>
+                      <NavLink to={l.to} end={l.end} activeClassName="bg-sidebar-accent text-primary font-medium">
+                        <l.icon className="mr-2 h-4 w-4" />
+                        <span>{l.label}</span>
+                      </NavLink>
+                    </SidebarMenuButton>
+                  )}
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -44,6 +59,48 @@ function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
+  );
+}
+
+function Breadcrumbs() {
+  const location = useLocation();
+  const parts = location.pathname.split("/").filter(Boolean);
+  // /admin → ["admin"]
+  // /admin/clientes → ["admin", "clientes"]
+  // /admin/clientes/3 → ["admin", "clientes", "3"]
+
+  const crumbs: { label: string; to?: string }[] = [{ label: "Admin", to: "/admin" }];
+
+  if (parts.length >= 2) {
+    const section = parts[1];
+    const labelMap: Record<string, string> = {
+      clientes: "Clientes",
+      pagamentos: "Pagamentos",
+      escalacoes: "Escalações",
+    };
+    if (labelMap[section]) {
+      crumbs.push({ label: labelMap[section], to: parts.length > 2 ? `/admin/${section}` : undefined });
+    }
+    if (parts.length >= 3 && section === "clientes") {
+      const id = parseInt(parts[2]);
+      const client = mockClients.find(c => c.id === id);
+      crumbs.push({ label: client?.clinica || `Cliente ${id}` });
+    }
+  }
+
+  return (
+    <div className="text-sm flex items-center gap-1.5 px-4 py-1 border-b border-border/50">
+      {crumbs.map((c, i) => (
+        <span key={i} className="flex items-center gap-1.5">
+          {i > 0 && <span className="text-muted-foreground">→</span>}
+          {c.to ? (
+            <Link to={c.to} className="text-muted-foreground hover:text-foreground transition-colors">{c.label}</Link>
+          ) : (
+            <span className={i === crumbs.length - 1 ? "text-foreground" : "text-muted-foreground"}>{c.label}</span>
+          )}
+        </span>
+      ))}
+    </div>
   );
 }
 
@@ -69,6 +126,7 @@ export default function AdminLayout() {
               <LogOut size={16} /> Sair
             </Button>
           </header>
+          <Breadcrumbs />
           <main className="flex-1 p-6 overflow-auto">
             <Outlet />
           </main>

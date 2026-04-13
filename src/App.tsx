@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import { ReactNode } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SplashScreen from "@/components/SplashScreen";
 import Index from "./pages/Index";
 import Pacotes from "./pages/Pacotes";
 import Sobre from "./pages/Sobre";
@@ -19,6 +20,7 @@ import DashboardEscalacoes from "./pages/DashboardEscalacoes";
 import DashboardSubscricao from "./pages/DashboardSubscricao";
 import DashboardNotificacoes from "./pages/DashboardNotificacoes";
 import DashboardConfiguracoes from "./pages/DashboardConfiguracoes";
+import DashboardRelatorios from "./pages/DashboardRelatorios";
 import FeaturePage from "./components/dashboard/FeaturePage";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminOverview from "./pages/admin/AdminOverview";
@@ -63,6 +65,7 @@ const App = () => (
       <PlanProvider>
         <Toaster />
         <Sonner />
+        <SplashScreen />
         <BrowserRouter>
           <Layout>
             <Routes>
@@ -79,6 +82,7 @@ const App = () => (
                 <Route path="subscricao" element={<DashboardSubscricao />} />
                 <Route path="notificacoes" element={<DashboardNotificacoes />} />
                 <Route path="configuracoes" element={<DashboardConfiguracoes />} />
+                <Route path="relatorios" element={<DashboardRelatorios />} />
                 <Route path="feature/:featureId" element={<FeaturePage />} />
               </Route>
               <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>

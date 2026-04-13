@@ -3,6 +3,7 @@ import FadeIn from "@/components/FadeIn";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertTriangle, CreditCard, Bell, Settings } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 
 interface Notification {
   id: number;
@@ -62,6 +63,9 @@ export default function DashboardNotificacoes() {
           <TabsTrigger value="sistema">Sistema</TabsTrigger>
         </TabsList>
         <TabsContent value={tab}>
+          {filtered.length === 0 ? (
+            <EmptyState icon={Bell} title="Nenhuma notificação" description="Estás a par de tudo. Novas notificações aparecerão aqui." />
+          ) : (
           <div className="space-y-2">
             {filtered.map(n => {
               const Icon = iconMap[n.type];
@@ -80,6 +84,7 @@ export default function DashboardNotificacoes() {
               );
             })}
           </div>
+          )}
         </TabsContent>
       </Tabs>
     </FadeIn>

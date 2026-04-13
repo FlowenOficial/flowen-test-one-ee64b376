@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 import { mockClients, AdminClient } from "./adminData";
 import { Link } from "react-router-dom";
+import EmptyState from "@/components/EmptyState";
 
 export default function AdminClientes() {
   const [clients, setClients] = useState<AdminClient[]>(mockClients);
@@ -38,6 +39,9 @@ export default function AdminClientes() {
           <TabsTrigger value="executive">Executive</TabsTrigger>
         </TabsList>
         <TabsContent value={tab}>
+          {filtered.length === 0 ? (
+            <EmptyState icon={Search} title="Nenhum cliente encontrado" description="Tenta pesquisar por outro nome ou email." />
+          ) : (
           <div className="gradient-border rounded-xl bg-card overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -71,6 +75,7 @@ export default function AdminClientes() {
               </tbody>
             </table>
           </div>
+          )}
         </TabsContent>
       </Tabs>
     </FadeIn>
