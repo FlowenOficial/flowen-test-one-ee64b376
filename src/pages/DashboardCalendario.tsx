@@ -9,9 +9,6 @@ import {
   Tooltip, TooltipContent, TooltipTrigger,
 } from "@/components/ui/tooltip";
 import EmptyState from "@/components/EmptyState";
-import {
-  Tooltip, TooltipContent, TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface Appointment {
   date: string; // YYYY-MM-DD
