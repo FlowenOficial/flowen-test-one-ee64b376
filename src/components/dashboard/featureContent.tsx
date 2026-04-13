@@ -146,9 +146,9 @@ const atendimento: FeatureContentDef = {
           </table>
         </div>
       </div>
+      <TrendChart data={trendAtendimento} label="Mensagens Respondidas — Últimos 30 Dias" />
     </>
   ),
-};
 
 /* agendamento */
 const agendamento: FeatureContentDef = {
@@ -187,10 +187,10 @@ const agendamento: FeatureContentDef = {
             ))}
           </div>
         </div>
+        <TrendChart data={trendAgendamento} label="Agendamentos — Últimos 30 Dias" />
       </>
     );
   },
-};
 
 /* lembretes */
 const lembretes: FeatureContentDef = {
@@ -231,10 +231,10 @@ const lembretes: FeatureContentDef = {
             </div>
           </div>
         </div>
+        <TrendChart data={trendLembretes} label="Lembretes Enviados — Últimos 30 Dias" />
       </>
     );
   },
-};
 
 /* relatorios */
 const relatorios: FeatureContentDef = {
