@@ -3,6 +3,8 @@ import FadeIn from "@/components/FadeIn";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CheckCircle2 } from "lucide-react";
+import EmptyState from "@/components/EmptyState";
 
 interface Escalacao {
   id: number;
@@ -44,6 +46,9 @@ export default function DashboardEscalacoes() {
           <TabsTrigger value="resolvidas">Resolvidas</TabsTrigger>
         </TabsList>
         <TabsContent value={tab}>
+          {filtered.length === 0 ? (
+            <EmptyState icon={CheckCircle2} title="Nenhuma escalação pendente" description="A Fernanda está a gerir tudo sem precisar de ajuda humana." />
+          ) : (
           <div className="gradient-border rounded-xl bg-card overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -80,6 +85,7 @@ export default function DashboardEscalacoes() {
               </tbody>
             </table>
           </div>
+          )}
         </TabsContent>
       </Tabs>
     </FadeIn>
