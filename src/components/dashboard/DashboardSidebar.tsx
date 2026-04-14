@@ -15,7 +15,7 @@ import {
   Bot, CalendarCheck, BellRing, BarChart3, AlertTriangle,
   HeartHandshake, Phone, CreditCard, CalendarClock, Repeat,
   UserCheck, TrendingUp, Lock, Activity, LifeBuoy, Calendar, Bell,
-  Clock, Settings, FileText,
+  Clock, Settings, FileText, UserX, Stethoscope,
 } from "lucide-react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -169,6 +169,8 @@ export default function DashboardSidebar() {
                   { to: "/dashboard/escalacoes", label: "Escalações", icon: AlertTriangle },
                   { to: "/dashboard/subscricao", label: "Subscrição", icon: CreditCard },
                   { to: "/dashboard/notificacoes", label: "Notificações", icon: Bell },
+                  { to: "/dashboard/risco", label: "Pacientes em Risco", icon: UserX },
+                  { to: "/dashboard/triagens", label: "Triagens", icon: Stethoscope },
                   { to: "/dashboard/configuracoes", label: "Configurações", icon: Settings },
                 ].map(item => (
                   <SidebarMenuItem key={item.to}>

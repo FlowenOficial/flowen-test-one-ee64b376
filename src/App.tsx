@@ -21,6 +21,8 @@ import DashboardSubscricao from "./pages/DashboardSubscricao";
 import DashboardNotificacoes from "./pages/DashboardNotificacoes";
 import DashboardConfiguracoes from "./pages/DashboardConfiguracoes";
 import DashboardRelatorios from "./pages/DashboardRelatorios";
+import DashboardRisco from "./pages/DashboardRisco";
+import DashboardTriagens from "./pages/DashboardTriagens";
 import FeaturePage from "./components/dashboard/FeaturePage";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminOverview from "./pages/admin/AdminOverview";
@@ -28,6 +30,8 @@ import AdminClientes from "./pages/admin/AdminClientes";
 import AdminClienteDetalhe from "./pages/admin/AdminClienteDetalhe";
 import AdminPagamentos from "./pages/admin/AdminPagamentos";
 import AdminEscalacoes from "./pages/admin/AdminEscalacoes";
+import AdminMonitor from "./pages/admin/AdminMonitor";
+import AdminTriagens from "./pages/admin/AdminTriagens";
 import NotFound from "./pages/NotFound";
 import { PlanProvider } from "./contexts/PlanContext";
 
@@ -83,6 +87,8 @@ const App = () => (
                 <Route path="notificacoes" element={<DashboardNotificacoes />} />
                 <Route path="configuracoes" element={<DashboardConfiguracoes />} />
                 <Route path="relatorios" element={<DashboardRelatorios />} />
+                <Route path="risco" element={<DashboardRisco />} />
+                <Route path="triagens" element={<DashboardTriagens />} />
                 <Route path="feature/:featureId" element={<FeaturePage />} />
               </Route>
               <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -91,6 +97,8 @@ const App = () => (
                 <Route path="clientes/:id" element={<AdminClienteDetalhe />} />
                 <Route path="pagamentos" element={<AdminPagamentos />} />
                 <Route path="escalacoes" element={<AdminEscalacoes />} />
+                <Route path="monitor" element={<AdminMonitor />} />
+                <Route path="triagens" element={<AdminTriagens />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

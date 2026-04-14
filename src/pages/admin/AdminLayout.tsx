@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { NavLink } from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { LayoutDashboard, Users, CreditCard, AlertTriangle, LogOut } from "lucide-react";
+import { LayoutDashboard, Users, CreditCard, AlertTriangle, LogOut, Activity, AlertCircle } from "lucide-react";
 import { mockClients } from "./adminData";
 
 const links = [
@@ -16,6 +16,8 @@ const links = [
   { to: "/admin/clientes", label: "Clientes", icon: Users, end: false },
   { to: "/admin/pagamentos", label: "Pagamentos", icon: CreditCard, end: true },
   { to: "/admin/escalacoes", label: "Escalações", icon: AlertTriangle, end: true },
+  { to: "/admin/monitor", label: "Monitor", icon: Activity, end: true },
+  { to: "/admin/triagens", label: "Triagens", icon: AlertCircle, end: true },
 ];
 
 function AdminSidebar() {
