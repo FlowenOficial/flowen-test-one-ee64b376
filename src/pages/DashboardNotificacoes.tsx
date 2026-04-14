@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FadeIn from "@/components/FadeIn";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,8 +6,8 @@ import { AlertTriangle, CreditCard, Bell, Settings } from "lucide-react";
 import EmptyState from "@/components/EmptyState";
 
 interface Notification {
-  id: number;
-  type: "escalacao" | "pagamento" | "sistema";
+  id: string | number;
+  type: "escalacao" | "pagamento" | "sistema" | "plano_actualizado";
   title: string;
   message: string;
   time: string;
@@ -31,11 +31,33 @@ const iconMap = {
   escalacao: AlertTriangle,
   pagamento: CreditCard,
   sistema: Settings,
+  plano_actualizado: Bell,
 };
 
 export default function DashboardNotificacoes() {
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const [notifications, setNotifications] = useState<Notification[]>(initialNotifications);
   const [tab, setTab] = useState("todas");
+
+  // Load localStorage notifications for this client
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("cliente_notificacoes_1");
+      if (stored) {
+        const parsed = JSON.parse(stored) as Array<{
+          id: string; tipo: string; titulo: string; mensagem: string; lida: boolean; data: string;
+        }>;
+        const extra: Notification[] = parsed.map(n => ({
+          id: n.id,
+          type: (n.tipo === "plano_actualizado" ? "plano_actualizado" : "sistema") as Notification["type"],
+          title: n.titulo,
+          message: n.mensagem,
+          time: n.data,
+          read: n.lida,
+        }));
+        setNotifications(prev => [...extra, ...prev]);
+      }
+    } catch { /* ignore */ }
+  }, []);
 
   const markAllRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
@@ -44,7 +66,7 @@ export default function DashboardNotificacoes() {
   const filtered = tab === "todas" ? notifications : notifications.filter(n => {
     if (tab === "escalacoes") return n.type === "escalacao";
     if (tab === "pagamentos") return n.type === "pagamento";
-    return n.type === "sistema";
+    return n.type === "sistema" || n.type === "plano_actualizado";
   });
 
   return (
