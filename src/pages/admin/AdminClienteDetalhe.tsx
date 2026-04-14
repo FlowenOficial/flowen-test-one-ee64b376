@@ -5,6 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, CreditCard } from "lucide-react";
 import { mockClients } from "./adminData";
+import { toast } from "sonner";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+
+type PlanOption = "Prime" | "Scale" | "Executive";
 
 const mockPayments = [
   { mes: "Março 2026", valor: "€199", estado: "Pago" },
@@ -20,14 +29,47 @@ const mockEscalacoes = [
   { paciente: "Pedro Reis", motivo: "Dúvida tratamento", data: "09 Abr, 16:22", status: "resolvido" },
 ];
 
+const planBadgeClass = (p: string) =>
+  p === "Executive" ? "bg-amber-500/20 text-amber-400 border-amber-500/30"
+    : p === "Scale" ? "bg-primary/20 text-primary border-primary/30"
+    : "bg-muted text-muted-foreground";
+
 export default function AdminClienteDetalhe() {
   const { id } = useParams();
   const client = mockClients.find(c => c.id === Number(id));
   const [estado, setEstado] = useState(client?.estado || "Ativo");
+  const [plano, setPlano] = useState<PlanOption>(client?.plano || "Prime");
+  const [selectedPlan, setSelectedPlan] = useState<PlanOption>(plano);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   if (!client) return <div className="p-8 text-center text-muted-foreground">Cliente não encontrado.</div>;
 
-  const planBadge = client.plano === "Executive" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" : client.plano === "Scale" ? "bg-primary/20 text-primary border-primary/30" : "bg-muted text-muted-foreground";
+  const confirmPlanChange = () => {
+    const oldPlan = plano;
+    setPlano(selectedPlan);
+    localStorage.setItem(`cliente_plano_${client.id}`, selectedPlan.toLowerCase());
+
+    // Add notification to localStorage
+    const key = `cliente_notificacoes_${client.id}`;
+    const existing = JSON.parse(localStorage.getItem(key) || "[]");
+    existing.unshift({
+      id: Date.now().toString(),
+      tipo: "plano_actualizado",
+      titulo: "Plano actualizado",
+      mensagem: `O teu plano foi actualizado para ${selectedPlan}. As novas funcionalidades já estão disponíveis.`,
+      lida: false,
+      data: "agora",
+    });
+    localStorage.setItem(key, JSON.stringify(existing));
+
+    // If this is client 1, also update the dashboard plan
+    if (client.id === 1) {
+      localStorage.setItem("flowen_current_plan", selectedPlan.toLowerCase());
+    }
+
+    toast.success(`Plano da ${client.clinica} actualizado para ${selectedPlan} com sucesso.`);
+    setConfirmOpen(false);
+  };
 
   return (
     <FadeIn>
@@ -36,7 +78,7 @@ export default function AdminClienteDetalhe() {
       </Link>
       <div className="flex items-center gap-3 mb-6">
         <h2 className="font-display text-2xl font-bold">{client.clinica}</h2>
-        <Badge className={`text-[10px] ${planBadge}`}>{client.plano}</Badge>
+        <Badge className={`text-[10px] ${planBadgeClass(plano)}`}>{plano}</Badge>
         <Badge className={`text-[10px] ${estado === "Ativo" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}`}>{estado}</Badge>
       </div>
 
@@ -48,7 +90,7 @@ export default function AdminClienteDetalhe() {
               <p><span className="text-muted-foreground">Email:</span> {client.email}</p>
               <p><span className="text-muted-foreground">Telefone:</span> {client.telefone}</p>
               <p><span className="text-muted-foreground">Data de Adesão:</span> {client.dataAdesao}</p>
-              <p><span className="text-muted-foreground">Plano:</span> {client.plano}</p>
+              <p><span className="text-muted-foreground">Plano:</span> {plano}</p>
             </div>
           </div>
           <div className="gradient-border rounded-xl p-6 bg-card space-y-3">
@@ -56,15 +98,43 @@ export default function AdminClienteDetalhe() {
             <div className="text-sm space-y-2">
               <p><span className="text-muted-foreground">Estado:</span> <Badge className={`text-[10px] ${estado === "Ativo" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}`}>{estado}</Badge></p>
               <p><span className="text-muted-foreground">Próxima Faturação:</span> {client.proximaFaturacao}</p>
-              <p><span className="text-muted-foreground">Valor:</span> €{client.plano === "Executive" ? "349" : client.plano === "Scale" ? "199" : "129"}</p>
+              <p><span className="text-muted-foreground">Valor:</span> €{plano === "Executive" ? "349" : plano === "Scale" ? "199" : "129"}</p>
               <div className="flex items-center gap-2 mt-2">
                 <CreditCard size={16} className="text-muted-foreground" />
                 <span>•••• •••• •••• 4242</span>
               </div>
             </div>
-            <Button variant={estado === "Ativo" ? "destructive" : "hero"} size="sm" onClick={() => setEstado(e => e === "Ativo" ? "Suspenso" : "Ativo")}>
+            <Button variant={estado === "Ativo" ? "destructive" : "default"} size="sm" onClick={() => setEstado(e => e === "Ativo" ? "Suspenso" : "Ativo")}>
               {estado === "Ativo" ? "Suspender" : "Reativar"}
             </Button>
+
+            {/* Plan Management */}
+            <div className="pt-4 border-t border-border mt-4">
+              <h4 className="text-sm font-semibold mb-3">Gestão de Plano</h4>
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-sm text-muted-foreground">Plano Actual:</span>
+                <Badge className={`text-[10px] ${planBadgeClass(plano)}`}>{plano}</Badge>
+              </div>
+              <div className="flex items-center gap-3">
+                <Select value={selectedPlan} onValueChange={(v) => setSelectedPlan(v as PlanOption)}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Prime">Prime</SelectItem>
+                    <SelectItem value="Scale">Scale</SelectItem>
+                    <SelectItem value="Executive">Executive</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  size="sm"
+                  disabled={selectedPlan === plano}
+                  onClick={() => setConfirmOpen(true)}
+                >
+                  Aplicar Alteração
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -99,6 +169,22 @@ export default function AdminClienteDetalhe() {
           </div>
         </div>
       </div>
+
+      {/* Confirm plan change dialog */}
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Confirmar alteração de plano</DialogTitle>
+            <DialogDescription>
+              Tens a certeza que queres mudar o plano da {client.clinica} de {plano} para {selectedPlan}? Esta alteração é imediata e o cliente terá acesso às novas funcionalidades de imediato.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 justify-end mt-4">
+            <Button variant="outline" onClick={() => setConfirmOpen(false)}>Cancelar</Button>
+            <Button onClick={confirmPlanChange}>Confirmar Alteração</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </FadeIn>
   );
 }

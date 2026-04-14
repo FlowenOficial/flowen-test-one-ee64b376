@@ -125,6 +125,55 @@ export default function AdminOverview() {
           </tbody>
         </table>
       </div>
+
+      {/* Follow-ups Este Mês — Por Clínica */}
+      <div className="gradient-border rounded-xl bg-card overflow-x-auto mt-8">
+        <h3 className="font-display font-semibold p-6 pb-0">Follow-ups Este Mês — Por Clínica</h3>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border text-muted-foreground text-left">
+              <th className="p-4 font-medium">Clínica</th>
+              <th className="p-4 font-medium">Confirmações</th>
+              <th className="p-4 font-medium hidden md:table-cell">Lembretes D-1</th>
+              <th className="p-4 font-medium hidden md:table-cell">Pós-Consulta</th>
+              <th className="p-4 font-medium hidden md:table-cell">Reengajamento</th>
+              <th className="p-4 font-medium hidden md:table-cell">Alertas Risco</th>
+              <th className="p-4 font-medium">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { clinica: "Clínica São João", c: 12, l: 11, p: 8, r: 3, a: 1 },
+              { clinica: "Centro Médico Lisboa", c: 18, l: 17, p: 14, r: 6, a: 2 },
+              { clinica: "Fisioterapia Norte", c: 6, l: 5, p: 4, r: 1, a: 0 },
+              { clinica: "Clínica Dental Porto", c: 9, l: 8, p: 7, r: 2, a: 1 },
+              { clinica: "Nutri Saúde", c: 0, l: 0, p: 0, r: 0, a: 0, inactive: true },
+              { clinica: "Psicologia Online", c: 11, l: 10, p: 8, r: 4, a: 1 },
+              { clinica: "Centro de Bem-Estar", c: 15, l: 14, p: 11, r: 5, a: 2 },
+              { clinica: "Clínica Familiar Algarve", c: 5, l: 4, p: 3, r: 1, a: 0 },
+            ].map((row, i) => (
+              <tr key={i} className={`border-b border-border/50 ${row.inactive ? "opacity-50" : ""}`}>
+                <td className="p-4 font-medium">{row.clinica}</td>
+                <td className="p-4">{row.c}</td>
+                <td className="p-4 hidden md:table-cell">{row.l}</td>
+                <td className="p-4 hidden md:table-cell">{row.p}</td>
+                <td className="p-4 hidden md:table-cell">{row.r}</td>
+                <td className="p-4 hidden md:table-cell">{row.a}</td>
+                <td className="p-4 font-medium">{row.c + row.l + row.p + row.r + row.a}</td>
+              </tr>
+            ))}
+            <tr className="border-t-2 border-border font-bold">
+              <td className="p-4">Total</td>
+              <td className="p-4">76</td>
+              <td className="p-4 hidden md:table-cell">69</td>
+              <td className="p-4 hidden md:table-cell">55</td>
+              <td className="p-4 hidden md:table-cell">22</td>
+              <td className="p-4 hidden md:table-cell">7</td>
+              <td className="p-4">229</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </FadeIn>
   );
 }

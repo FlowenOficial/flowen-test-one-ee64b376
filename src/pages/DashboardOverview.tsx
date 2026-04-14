@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { NumberTicker } from "@/components/NumberTicker";
 import {
   CalendarCheck, AlertTriangle, TrendingUp, CreditCard,
-  MessageSquare, Bell, Calendar, Heart, Bot,
+  MessageSquare, Bell, Calendar, Heart, Bot, Phone,
 } from "lucide-react";
 import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -135,6 +135,31 @@ export default function DashboardOverview() {
               </LineChart>
             </ResponsiveContainer>
           </div>
+        </div>
+      </div>
+
+      {/* Confirmações Pendentes para Amanhã */}
+      <div className="gradient-border rounded-xl p-6 bg-card transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] mb-8">
+        <h3 className="font-display font-semibold mb-1">Confirmações Pendentes para Amanhã</h3>
+        <p className="text-xs text-muted-foreground mb-4">Pacientes que ainda não confirmaram presença</p>
+        <div className="space-y-3">
+          {[
+            { nome: "Ana Silva", tipo: "Consulta Geral", hora: "09:00" },
+            { nome: "João Costa", tipo: "Fisioterapia", hora: "10:30" },
+            { nome: "Maria Santos", tipo: "Nutrição", hora: "14:00" },
+            { nome: "Pedro Reis", tipo: "Psicologia", hora: "15:30" },
+          ].map((p, i) => (
+            <div key={i} className="flex items-center gap-3 p-3 rounded-lg bg-muted">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">{p.nome}</p>
+                <p className="text-xs text-muted-foreground">{p.tipo} · {p.hora}</p>
+              </div>
+              <Badge className="text-[10px] bg-amber-500/20 text-amber-400 border-amber-500/30">Aguarda confirmação</Badge>
+              <Button variant="outline" size="sm" className="text-xs shrink-0">
+                <Phone size={14} className="mr-1" /> Contactar
+              </Button>
+            </div>
+          ))}
         </div>
       </div>
 

@@ -11,11 +11,11 @@ import {
 import EmptyState from "@/components/EmptyState";
 
 interface Appointment {
-  date: string; // YYYY-MM-DD
+  date: string;
   hour: string;
   patient: string;
   type: string;
-  status: "confirmado" | "pendente" | "cancelado";
+  status: "confirmado" | "pendente" | "cancelado" | "falta" | "realizado";
 }
 
 const names = ["Ana Silva", "João Costa", "Maria Santos", "Pedro Reis", "Carla Mendes", "Sofia Almeida", "Ricardo Lopes", "Marta Ferreira", "Tiago Oliveira", "Inês Pinto", "Bruno Sousa", "Catarina Neves", "Diogo Ramos", "Helena Martins", "Filipe Correia"];
@@ -36,7 +36,7 @@ function generateAppointments(year: number, month: number): Appointment[] {
     if (dow === 0 || dow === 6) continue;
     const dd = String(day).padStart(2, "0");
     const mm = String(month + 1).padStart(2, "0");
-    const statuses: Appointment["status"][] = ["confirmado", "confirmado", "confirmado", "pendente", "cancelado"];
+    const statuses: Appointment["status"][] = ["confirmado", "confirmado", "realizado", "pendente", "cancelado", "falta", "realizado"];
     result.push({
       date: `${year}-${mm}-${dd}`,
       hour: hours[rand() % hours.length],
@@ -50,8 +50,32 @@ function generateAppointments(year: number, month: number): Appointment[] {
 
 const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
+const statusDotColor: Record<string, string> = {
+  confirmado: "bg-primary",
+  pendente: "bg-amber-400",
+  cancelado: "bg-muted-foreground",
+  falta: "bg-red-400",
+  realizado: "bg-emerald-400",
+};
+
+const statusBadgeClass: Record<string, string> = {
+  confirmado: "bg-primary/20 text-primary border-primary/30",
+  pendente: "bg-amber-500/20 text-amber-400 border-amber-500/30",
+  cancelado: "bg-muted text-muted-foreground",
+  falta: "bg-red-500/20 text-red-400 border-red-500/30",
+  realizado: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+};
+
+const statusLabel: Record<string, string> = {
+  confirmado: "Confirmado",
+  pendente: "Pendente",
+  cancelado: "Cancelado",
+  falta: "Falta",
+  realizado: "Realizado",
+};
+
 export default function DashboardCalendario() {
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 3, 1)); // April 2026
+  const [currentDate, setCurrentDate] = useState(new Date(2026, 3, 1));
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [view, setView] = useState<"mensal" | "semanal">("mensal");
 
@@ -68,13 +92,13 @@ export default function DashboardCalendario() {
   const totalConsultas = appointments.length;
   const pendentes = appointments.filter(a => a.status === "pendente").length;
   const canceladas = appointments.filter(a => a.status === "cancelado").length;
+  const faltas = appointments.filter(a => a.status === "falta").length;
 
   const prevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
 
-  // Calendar grid
   const firstDayOfMonth = new Date(year, month, 1).getDay();
-  const startDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; // Monday start
+  const startDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const cells: (number | null)[] = [];
   for (let i = 0; i < startDay; i++) cells.push(null);
@@ -83,9 +107,8 @@ export default function DashboardCalendario() {
 
   const selectedAppts = selectedDay ? apptsByDate[selectedDay] || [] : [];
 
-  // Weekly view
   const weekHours = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00"];
-  const today = new Date(year, month, 11); // mock current day
+  const today = new Date(year, month, 11);
   const dayOfWeek = today.getDay() === 0 ? 6 : today.getDay() - 1;
   const weekStart = new Date(today);
   weekStart.setDate(today.getDate() - dayOfWeek);
@@ -99,14 +122,13 @@ export default function DashboardCalendario() {
         </Tabs>
       </div>
 
-      {/* Summary */}
       <div className="flex flex-wrap gap-4 mb-6 text-sm">
         <span className="text-muted-foreground">Este mês: <strong className="text-foreground">{totalConsultas} consultas</strong></span>
         <span className="text-muted-foreground">| <strong className="text-amber-400">{pendentes} pendentes</strong> de confirmação</span>
         <span className="text-muted-foreground">| <strong className="text-red-400">{canceladas} canceladas</strong></span>
+        <span className="text-muted-foreground">| <strong className="text-red-400">{faltas} faltas</strong> registadas</span>
       </div>
 
-      {/* Month navigation */}
       <div className="flex items-center gap-4 mb-4">
         <Button variant="ghost" size="icon" onClick={prevMonth}><ChevronLeft size={18} /></Button>
         <span className="font-display font-semibold text-lg">{monthNames[month]} {year}</span>
@@ -137,8 +159,8 @@ export default function DashboardCalendario() {
                       <span className="text-sm">{day}</span>
                       {dayAppts && (
                         <div className="flex gap-0.5 mt-0.5">
-                          {dayAppts.slice(0, 3).map((_, j) => (
-                            <span key={j} className="w-1.5 h-1.5 rounded-full bg-primary" />
+                          {dayAppts.slice(0, 4).map((a, j) => (
+                            <span key={j} className={`w-1.5 h-1.5 rounded-full ${statusDotColor[a.status]}`} />
                           ))}
                         </div>
                       )}
@@ -189,7 +211,6 @@ export default function DashboardCalendario() {
         </div>
       )}
 
-      {/* Day detail sheet */}
       <Sheet open={!!selectedDay} onOpenChange={() => setSelectedDay(null)}>
         <SheetContent className="bg-card border-border">
           <SheetHeader>
@@ -203,8 +224,8 @@ export default function DashboardCalendario() {
                 <div key={i} className="p-3 rounded-lg bg-muted">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-medium">{a.hour}</span>
-                    <Badge className={`text-[10px] ${a.status === "confirmado" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : a.status === "pendente" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}`}>
-                      {a.status === "confirmado" ? "Confirmado" : a.status === "pendente" ? "Pendente" : "Cancelado"}
+                    <Badge className={`text-[10px] ${statusBadgeClass[a.status]}`}>
+                      {statusLabel[a.status]}
                     </Badge>
                   </div>
                   <p className="text-sm">{a.patient}</p>
