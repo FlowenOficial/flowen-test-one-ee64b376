@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePlan, FEATURES, PLAN_LABELS, PLAN_ORDER, isFeatureUnlocked, PlanTier } from "@/contexts/PlanContext";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -17,6 +17,7 @@ import {
   UserCheck, TrendingUp, Lock, Activity, LifeBuoy, Calendar, Bell,
   Clock, Settings, FileText, UserX, Stethoscope,
 } from "lucide-react";
+import { getConfigSeccoes, type ConfigSeccoes } from "@/lib/seccoes";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const iconMap: Record<string, any> = {
@@ -38,6 +39,33 @@ const tierBadgeClass: Record<string, string> = {
   executive: "bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px] px-1.5 py-0",
 };
 
+// Map sidebar items to seccao IDs
+const mainNavSeccaoMap: Record<string, string> = {
+  "/dashboard": "visao_geral",
+  "/dashboard/calendario": "calendario",
+  "/dashboard/relatorios": "relatorios",
+  "/dashboard/suporte": "suporte",
+};
+
+const accountNavSeccaoMap: Record<string, string> = {
+  "/dashboard/escalacoes": "escalacoes",
+  "/dashboard/subscricao": "subscricao",
+  "/dashboard/notificacoes": "notificacoes",
+  "/dashboard/risco": "risco",
+  "/dashboard/triagens": "triagens",
+  "/dashboard/configuracoes": "configuracoes",
+};
+
+// Map feature IDs to seccao IDs
+const featureSeccaoMap: Record<string, string> = {
+  atendimento: "atendimento",
+  agendamento: "agendamento",
+  lembretes: "lembretes",
+  relatorios: "relatorios_feature",
+  prioridade: "prioridade",
+  followup: "followup",
+};
+
 function SidebarItemWithTooltip({ collapsed, label, children }: { collapsed: boolean; label: string; children: React.ReactNode }) {
   if (!collapsed) return <>{children}</>;
   return (
@@ -54,6 +82,57 @@ export default function DashboardSidebar() {
   const collapsed = state === "collapsed";
   const location = useLocation();
   const [execDialog, setExecDialog] = useState(false);
+  const [seccaoDialog, setSeccaoDialog] = useState(false);
+  const [seccoes, setSeccoes] = useState<ConfigSeccoes>({});
+
+  useEffect(() => {
+    // Load section config for client 1 (default)
+    setSeccoes(getConfigSeccoes(1));
+  }, []);
+
+  const isSeccaoVisible = (seccaoId: string): "visible" | "em_breve" | "hidden" => {
+    const cfg = seccoes[seccaoId];
+    if (!cfg) return "visible"; // default visible
+    if (cfg.activa) return "visible";
+    return cfg.modo === "ocultar" ? "hidden" : "em_breve";
+  };
+
+  const renderSeccaoEmBreve = (label: string, icon: React.ElementType) => {
+    const Icon = icon;
+    return (
+      <SidebarMenuButton
+        className="opacity-40 cursor-pointer"
+        onClick={() => setSeccaoDialog(true)}
+      >
+        <Icon className="mr-2 h-4 w-4 shrink-0" />
+        {!collapsed && (
+          <span className="flex items-center gap-2 min-w-0">
+            <span className="truncate text-sm">{label}</span>
+            <Clock size={12} className="shrink-0 text-amber-400" />
+            <Badge className="shrink-0 bg-amber-500/20 text-amber-400 border-amber-500/30 text-[10px] px-1.5 py-0">
+              Em Breve
+            </Badge>
+          </span>
+        )}
+      </SidebarMenuButton>
+    );
+  };
+
+  const mainNavItems = [
+    { to: "/dashboard", label: "Visão Geral", icon: Activity, end: true },
+    { to: "/dashboard/calendario", label: "Calendário", icon: Calendar, end: true },
+    { to: "/dashboard/relatorios", label: "Relatórios", icon: FileText, end: true },
+    { to: "/dashboard/suporte", label: "Suporte", icon: LifeBuoy, end: true },
+  ];
+
+  const accountNavItems = [
+    { to: "/dashboard/escalacoes", label: "Escalações", icon: AlertTriangle },
+    { to: "/dashboard/subscricao", label: "Subscrição", icon: CreditCard },
+    { to: "/dashboard/notificacoes", label: "Notificações", icon: Bell },
+    { to: "/dashboard/risco", label: "Pacientes em Risco", icon: UserX },
+    { to: "/dashboard/triagens", label: "Triagens", icon: Stethoscope },
+    { to: "/dashboard/configuracoes", label: "Configurações", icon: Settings },
+  ];
 
   return (
     <>
@@ -64,23 +143,32 @@ export default function DashboardSidebar() {
             <SidebarGroupLabel>Dashboard</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {[
-                  { to: "/dashboard", label: "Visão Geral", icon: Activity, end: true },
-                  { to: "/dashboard/calendario", label: "Calendário", icon: Calendar, end: true },
-                  { to: "/dashboard/relatorios", label: "Relatórios", icon: FileText, end: true },
-                  { to: "/dashboard/suporte", label: "Suporte", icon: LifeBuoy, end: true },
-                ].map(item => (
-                  <SidebarMenuItem key={item.to}>
-                    <SidebarItemWithTooltip collapsed={collapsed} label={item.label}>
-                      <SidebarMenuButton asChild>
-                        <NavLink to={item.to} end={item.end} activeClassName="bg-sidebar-accent text-primary font-medium">
-                          <item.icon className="mr-2 h-4 w-4" />
-                          {!collapsed && <span>{item.label}</span>}
-                        </NavLink>
-                      </SidebarMenuButton>
-                    </SidebarItemWithTooltip>
-                  </SidebarMenuItem>
-                ))}
+                {mainNavItems.map(item => {
+                  const seccaoId = mainNavSeccaoMap[item.to];
+                  const vis = seccaoId ? isSeccaoVisible(seccaoId) : "visible";
+                  if (vis === "hidden") return null;
+                  if (vis === "em_breve") {
+                    return (
+                      <SidebarMenuItem key={item.to}>
+                        <SidebarItemWithTooltip collapsed={collapsed} label={`${item.label} — Em Breve`}>
+                          {renderSeccaoEmBreve(item.label, item.icon)}
+                        </SidebarItemWithTooltip>
+                      </SidebarMenuItem>
+                    );
+                  }
+                  return (
+                    <SidebarMenuItem key={item.to}>
+                      <SidebarItemWithTooltip collapsed={collapsed} label={item.label}>
+                        <SidebarMenuButton asChild>
+                          <NavLink to={item.to} end={item.end} activeClassName="bg-sidebar-accent text-primary font-medium">
+                            <item.icon className="mr-2 h-4 w-4" />
+                            {!collapsed && <span>{item.label}</span>}
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </SidebarItemWithTooltip>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -96,6 +184,21 @@ export default function DashboardSidebar() {
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {features.map((feature) => {
+                      // Check section visibility
+                      const seccaoId = featureSeccaoMap[feature.id];
+                      const vis = seccaoId ? isSeccaoVisible(seccaoId) : "visible";
+                      if (vis === "hidden") return null;
+                      if (vis === "em_breve") {
+                        const Icon = iconMap[feature.icon] || Bot;
+                        return (
+                          <SidebarMenuItem key={feature.id}>
+                            <SidebarItemWithTooltip collapsed={collapsed} label={`${feature.label} — Em Breve`}>
+                              {renderSeccaoEmBreve(feature.label, Icon)}
+                            </SidebarItemWithTooltip>
+                          </SidebarMenuItem>
+                        );
+                      }
+
                       const unlocked = isFeatureUnlocked(feature.tier, currentPlan);
                       const isExec = feature.tier === "executive";
                       const Icon = iconMap[feature.icon] || Bot;
@@ -165,25 +268,32 @@ export default function DashboardSidebar() {
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {[
-                  { to: "/dashboard/escalacoes", label: "Escalações", icon: AlertTriangle },
-                  { to: "/dashboard/subscricao", label: "Subscrição", icon: CreditCard },
-                  { to: "/dashboard/notificacoes", label: "Notificações", icon: Bell },
-                  { to: "/dashboard/risco", label: "Pacientes em Risco", icon: UserX },
-                  { to: "/dashboard/triagens", label: "Triagens", icon: Stethoscope },
-                  { to: "/dashboard/configuracoes", label: "Configurações", icon: Settings },
-                ].map(item => (
-                  <SidebarMenuItem key={item.to}>
-                    <SidebarItemWithTooltip collapsed={collapsed} label={item.label}>
-                      <SidebarMenuButton asChild>
-                        <NavLink to={item.to} end activeClassName="bg-sidebar-accent text-primary font-medium">
-                          <item.icon className="mr-2 h-4 w-4" />
-                          {!collapsed && <span>{item.label}</span>}
-                        </NavLink>
-                      </SidebarMenuButton>
-                    </SidebarItemWithTooltip>
-                  </SidebarMenuItem>
-                ))}
+                {accountNavItems.map(item => {
+                  const seccaoId = accountNavSeccaoMap[item.to];
+                  const vis = seccaoId ? isSeccaoVisible(seccaoId) : "visible";
+                  if (vis === "hidden") return null;
+                  if (vis === "em_breve") {
+                    return (
+                      <SidebarMenuItem key={item.to}>
+                        <SidebarItemWithTooltip collapsed={collapsed} label={`${item.label} — Em Breve`}>
+                          {renderSeccaoEmBreve(item.label, item.icon)}
+                        </SidebarItemWithTooltip>
+                      </SidebarMenuItem>
+                    );
+                  }
+                  return (
+                    <SidebarMenuItem key={item.to}>
+                      <SidebarItemWithTooltip collapsed={collapsed} label={item.label}>
+                        <SidebarMenuButton asChild>
+                          <NavLink to={item.to} end activeClassName="bg-sidebar-accent text-primary font-medium">
+                            <item.icon className="mr-2 h-4 w-4" />
+                            {!collapsed && <span>{item.label}</span>}
+                          </NavLink>
+                        </SidebarMenuButton>
+                      </SidebarItemWithTooltip>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -208,6 +318,29 @@ export default function DashboardSidebar() {
           <div className="flex gap-3 justify-center mt-4">
             <Button variant="outline" onClick={() => setExecDialog(false)}>Fechar</Button>
             <Link to="/contacto" onClick={() => setExecDialog(false)}>
+              <Button variant="hero">Contactar</Button>
+            </Link>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Section "Em Breve" Dialog */}
+      <Dialog open={seccaoDialog} onOpenChange={setSeccaoDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="flex justify-center mb-4">
+              <div className="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center">
+                <Clock size={32} className="text-amber-400" />
+              </div>
+            </div>
+            <DialogTitle className="text-center">Secção Temporariamente Indisponível</DialogTitle>
+            <DialogDescription className="text-center">
+              Esta secção está temporariamente indisponível. Contacta-nos para mais informações.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex gap-3 justify-center mt-4">
+            <Button variant="outline" onClick={() => setSeccaoDialog(false)}>Fechar</Button>
+            <Link to="/contacto" onClick={() => setSeccaoDialog(false)}>
               <Button variant="hero">Contactar</Button>
             </Link>
           </div>
