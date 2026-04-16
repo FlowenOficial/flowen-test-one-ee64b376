@@ -18,8 +18,8 @@ const stats = [
 ];
 
 const team = [
-  { initial: "C", name: "Caetano", role: "Co-fundador & Automação", desc: "Especialista em sistemas de automação operacional com foco em resultados mensuráveis." },
-  { initial: "F", name: "Flowen Team", role: "Suporte & Implementação", desc: "Equipa dedicada à implementação e suporte contínuo de todos os clientes." },
+  { initial: "C", name: "Caetano", role: "Fundador", desc: "Especialista em sistemas de automação operacional com foco em resultados mensuráveis." },
+{ initial: "R", name: "Renato", role: "Fundador", desc: "Responsável pelo desenvolvimento e crescimento da Flowen junto das clínicas parceiras." },
 ];
 
 const Sobre = () => (
