@@ -1,5 +1,6 @@
-import { Outlet, useNavigate, Link, useLocation, useParams } from "react-router-dom";
+import { Outlet, useNavigate, Link, useLocation } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar,
@@ -108,7 +109,9 @@ function Breadcrumbs() {
 
 export default function AdminLayout() {
   const navigate = useNavigate();
-  const handleLogout = () => {
+  const { signOut } = useAuth();
+  const handleLogout = async () => {
+    await signOut();
     localStorage.removeItem("flowen_auth");
     localStorage.removeItem("adminMode");
     navigate("/");

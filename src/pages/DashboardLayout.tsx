@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Bell, Search, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/hooks/useTheme";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
@@ -26,6 +27,7 @@ export default function DashboardLayout() {
   const [notifCount] = useState(3);
   const [searchOpen, setSearchOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { signOut } = useAuth();
 
   // Ctrl+K / Cmd+K shortcut
   useEffect(() => {
@@ -39,7 +41,8 @@ export default function DashboardLayout() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await signOut();
     localStorage.removeItem("flowen_auth");
     navigate("/");
   };

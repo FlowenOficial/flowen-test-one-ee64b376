@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search } from "lucide-react";
+import { Search, LayoutGrid } from "lucide-react";
 import { mockClients, AdminClient } from "./adminData";
 import { Link } from "react-router-dom";
 import EmptyState from "@/components/EmptyState";
@@ -131,6 +131,11 @@ export default function AdminClientes() {
                             </div>
                           </PopoverContent>
                         </Popover>
+                        <Link to={`/admin/clientes/${c.id}`}>
+                          <Button variant="outline" size="sm" className="text-xs">
+                            <LayoutGrid size={14} className="mr-1" /> Secções
+                          </Button>
+                        </Link>
                       </div>
                     </td>
                   </tr>
