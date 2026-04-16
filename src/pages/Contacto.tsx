@@ -181,7 +181,7 @@ const Contacto = () => {
                 </div>
 
                 <div className="text-center">
-                  <a href="https://wa.me/351912345678" target="_blank" rel="noopener noreferrer">
+                  <a href="https://wa.me/351931838188" target="_blank" rel="noopener noreferrer">
                     <Button variant="heroOutline" size="lg" className="w-full">
                       <MessageCircle size={18} /> WhatsApp
                     </Button>
