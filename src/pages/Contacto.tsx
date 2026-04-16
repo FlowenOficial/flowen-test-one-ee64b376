@@ -32,7 +32,7 @@ const Contacto = () => {
     if (!canSubmit) return;
     setStatus("sending");
     try {
-      const res = await fetch("https://formspree.io/f/REPLACE_FORM_ID", {
+      const res = await fetch("https://formspree.io/f/mvzdkpeb", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: form.nome, email: form.email, phone: form.telefone, subject: form.assunto, message: form.mensagem }),
