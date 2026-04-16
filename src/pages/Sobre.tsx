@@ -19,7 +19,7 @@ const stats = [
 
 const team = [
   { initial: "C", name: "Caetano", role: "Fundador", desc: "Especialista em sistemas de automação operacional com foco em resultados mensuráveis." },
-{ initial: "R", name: "Renato", role: "Fundador", desc: "Responsável pelo desenvolvimento e crescimento da Flowen junto das clínicas parceiras." },
+  { initial: "R", name: "Renato", role: "Fundador", desc: "Responsável pelo desenvolvimento e crescimento da Flowen junto das clínicas parceiras." },
 ];
 
 const Sobre = () => (
