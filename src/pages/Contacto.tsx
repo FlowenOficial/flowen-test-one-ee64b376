@@ -154,11 +154,11 @@ const Contacto = () => {
                 <div className="gradient-border rounded-xl p-6 bg-card space-y-5">
                   <div className="flex items-start gap-3">
                     <Mail size={18} className="text-primary mt-0.5" />
-                    <div><p className="text-sm font-medium">Email</p><p className="text-sm text-muted-foreground">geral@flowen.pt</p></div>
+                    <div><p className="text-sm font-medium">Email</p><p className="text-sm text-muted-foreground">centralflowen@gmail.com</p></div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Phone size={18} className="text-primary mt-0.5" />
-                    <div><p className="text-sm font-medium">WhatsApp</p><p className="text-sm text-muted-foreground">+351 912 345 678</p></div>
+                    <div><p className="text-sm font-medium">WhatsApp</p><p className="text-sm text-muted-foreground">+351 931 838 188</p></div>
                   </div>
                   <div className="flex items-start gap-3">
                     <MapPin size={18} className="text-primary mt-0.5" />
@@ -166,7 +166,7 @@ const Contacto = () => {
                   </div>
                   <div className="flex items-start gap-3">
                     <Clock size={18} className="text-primary mt-0.5" />
-                    <div><p className="text-sm font-medium">Horário</p><p className="text-sm text-muted-foreground">Segunda a Sexta, 9h-18h</p></div>
+                    <div><p className="text-sm font-medium">Horário</p><p className="text-sm text-muted-foreground">Segunda a Sexta, 9h-20h</p></div>
                   </div>
                 </div>
 
