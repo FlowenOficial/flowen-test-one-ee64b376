@@ -109,7 +109,9 @@ function Breadcrumbs() {
 
 export default function AdminLayout() {
   const navigate = useNavigate();
-  const handleLogout = () => {
+  const { signOut } = useAuth();
+  const handleLogout = async () => {
+    await signOut();
     localStorage.removeItem("flowen_auth");
     localStorage.removeItem("adminMode");
     navigate("/");
