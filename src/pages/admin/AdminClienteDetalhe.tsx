@@ -6,12 +6,16 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, CreditCard } from "lucide-react";
 import { mockClients } from "./adminData";
 import { toast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+  TODAS_SECCOES, getConfigSeccoes, saveConfigSeccoes, type ConfigSeccoes, type Seccao,
+} from "@/lib/seccoes";
 
 type PlanOption = "Prime" | "Scale" | "Executive";
 
@@ -34,6 +38,12 @@ const planBadgeClass = (p: string) =>
     : p === "Scale" ? "bg-primary/20 text-primary border-primary/30"
     : "bg-muted text-muted-foreground";
 
+const seccaoGroups: { label: string; tipo: Seccao["tipo"] }[] = [
+  { label: "Navegação Principal", tipo: "sidebar_principal" },
+  { label: "Área de Conta", tipo: "sidebar_conta" },
+  { label: "Funcionalidades", tipo: "sidebar_feature" },
+];
+
 export default function AdminClienteDetalhe() {
   const { id } = useParams();
   const client = mockClients.find(c => c.id === Number(id));
@@ -42,14 +52,15 @@ export default function AdminClienteDetalhe() {
   const [selectedPlan, setSelectedPlan] = useState<PlanOption>(plano);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
+  // Section control state
+  const [seccoes, setSeccoes] = useState<ConfigSeccoes>(() => getConfigSeccoes(Number(id)));
+
   if (!client) return <div className="p-8 text-center text-muted-foreground">Cliente não encontrado.</div>;
 
   const confirmPlanChange = () => {
-    const oldPlan = plano;
     setPlano(selectedPlan);
     localStorage.setItem(`cliente_plano_${client.id}`, selectedPlan.toLowerCase());
 
-    // Add notification to localStorage
     const key = `cliente_notificacoes_${client.id}`;
     const existing = JSON.parse(localStorage.getItem(key) || "[]");
     existing.unshift({
@@ -62,13 +73,29 @@ export default function AdminClienteDetalhe() {
     });
     localStorage.setItem(key, JSON.stringify(existing));
 
-    // If this is client 1, also update the dashboard plan
-    if (client.id === 1) {
-      localStorage.setItem("flowen_current_plan", selectedPlan.toLowerCase());
-    }
+    if (client.id === 1) localStorage.setItem("flowen_current_plan", selectedPlan.toLowerCase());
 
     toast.success(`Plano da ${client.clinica} actualizado para ${selectedPlan} com sucesso.`);
     setConfirmOpen(false);
+  };
+
+  const toggleSeccao = (seccaoId: string) => {
+    setSeccoes(prev => ({
+      ...prev,
+      [seccaoId]: { ...prev[seccaoId], activa: !prev[seccaoId]?.activa },
+    }));
+  };
+
+  const setSeccaoModo = (seccaoId: string, modo: "ocultar" | "em_breve") => {
+    setSeccoes(prev => ({
+      ...prev,
+      [seccaoId]: { ...prev[seccaoId], modo },
+    }));
+  };
+
+  const saveSeccoes = () => {
+    saveConfigSeccoes(client.id, seccoes);
+    toast.success(`Secções actualizadas para ${client.clinica}`);
   };
 
   return (
@@ -80,6 +107,55 @@ export default function AdminClienteDetalhe() {
         <h2 className="font-display text-2xl font-bold">{client.clinica}</h2>
         <Badge className={`text-[10px] ${planBadgeClass(plano)}`}>{plano}</Badge>
         <Badge className={`text-[10px] ${estado === "Ativo" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}`}>{estado}</Badge>
+      </div>
+
+      {/* Section Control Card */}
+      <div className="gradient-border rounded-xl p-6 bg-card mb-6">
+        <div className="flex items-center justify-between mb-1">
+          <div>
+            <h3 className="font-display font-semibold">Controlo de Secções do Dashboard</h3>
+            <p className="text-xs text-muted-foreground">Activa ou desactiva secções individuais para esta clínica</p>
+          </div>
+          <Button size="sm" onClick={saveSeccoes}>Guardar Alterações</Button>
+        </div>
+        <div className="space-y-6 mt-4">
+          {seccaoGroups.map(group => {
+            const items = TODAS_SECCOES.filter(s => s.tipo === group.tipo);
+            return (
+              <div key={group.tipo}>
+                <h4 className="text-sm font-semibold text-muted-foreground mb-3">{group.label}</h4>
+                <div className="space-y-3">
+                  {items.map(s => {
+                    const cfg = seccoes[s.id] || { activa: true, modo: "em_breve" as const };
+                    return (
+                      <div key={s.id} className="flex items-center gap-4 p-3 rounded-lg bg-muted">
+                        <Switch checked={cfg.activa} onCheckedChange={() => toggleSeccao(s.id)} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium">{s.label}</p>
+                          <p className="text-xs text-muted-foreground">{s.descricao}</p>
+                        </div>
+                        <Badge className={`text-[10px] ${cfg.activa ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-red-500/20 text-red-400 border-red-500/30"}`}>
+                          {cfg.activa ? "Activo" : "Inactivo"}
+                        </Badge>
+                        {!cfg.activa && (
+                          <Select value={cfg.modo} onValueChange={(v) => setSeccaoModo(s.id, v as "ocultar" | "em_breve")}>
+                            <SelectTrigger className="w-48">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="ocultar">Ocultar completamente</SelectItem>
+                              <SelectItem value="em_breve">Mostrar como Em Breve</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
